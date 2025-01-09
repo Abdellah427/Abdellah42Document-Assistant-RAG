@@ -12,6 +12,8 @@ model = "mistral-large-latest"
 client = Mistral(api_key=api_key)
 
 def mistral_response(user_input):
+    if 'history' not in st.session_state:
+    st.session_state.history = []
     # Historique des conversations (utilisation des 5 derniers messages)
     conversation_history = "\n".join(st.session_state.history[-5:])  # Contexte des 5 derniers messages
     prompt = f"{conversation_history}\nYou: {user_input}\nBot:"
