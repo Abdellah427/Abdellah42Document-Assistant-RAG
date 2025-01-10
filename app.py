@@ -67,15 +67,16 @@ def main():
 
             #Celle de Romain
             #collection = create_db.create_vector_db(db_path)
+            #logging.info("Database created successfully!")
+            #create_db.process_csvs(csv_folder, collection)
+            #logging.info("CSV files processed successfully!")
+            #st.write("Database created successfully!")
 
             #Celle de ColBERTv2
-            encoded_np,index_name = create_db.create_vector_db_colbertv2(csv_path, db_path)
-            create_db.save_index(encoded_np, index_name)
+            encoded_np,index_name = create_db.create_vector_db_colbertv2(csv_path)
+            create_db.save_index(encoded_np, db_path, index_name)
 
-            logging.info("Database created successfully!")
-            create_db.process_csvs(csv_folder, collection)
-            logging.info("CSV files processed successfully!")
-            st.write("Database created successfully!")
+            
         else:
             st.write("Please upload CSV files.")
 

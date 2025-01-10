@@ -60,8 +60,8 @@ def create_vector_db_colbertv2(csv_path, chunk_size=400):
 
     return encoded_docs, index_name
 
-def save_index(encoded_np, index_path):  
-    np.save(index_path, encoded_np)
+def save_index(encoded_np, db_path, index_name):  
+    np.save(os.path.join(db_path, index_name), encoded_np)
 
 # Romain
 
