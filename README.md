@@ -1,4 +1,3 @@
-
 # Document Assistant RAG
 
 This project implements a documentation assistant based on the Retrieval-Augmented Generation (RAG) model. It is designed to provide augmented information from external data and generate relevant responses for users.
@@ -44,3 +43,4 @@ Once the container is running, you can access the application via:
 - **From another device on the same network** : Use the external URL provided by Docker, for example: `http://<votre-ip-publique>:8501`.
 
 The Streamlit application interface will then be accessible.
+

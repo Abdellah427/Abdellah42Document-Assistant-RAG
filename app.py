@@ -1,60 +1,45 @@
-from mistralai import Mistral
 import streamlit as st
+from create_db import create_vector_db, process_csvs
+from connect_mistral import query_mistral
+from helpers import preprocess_input, format_response
 import os
+import logging
 
-# Configuration de l'API
-os.environ["MISTRAL_API_KEY"] = "ZqdIf3aZDPfbyWXCuHy2WhDmdYCTZ935"
+logging.basicConfig(level=logging.INFO)
 
-api_key = os.environ["MISTRAL_API_KEY"]
-model = "mistral-large-latest"
-
-# Initialisation du client Mistral
-client = Mistral(api_key=api_key)
-
-def mistral_response(user_input):
-    # Historique des conversations (utilisation des 5 derniers messages)
-    conversation_history = "\n".join(st.session_state.history[-5:])  # Contexte des 5 derniers messages
-    prompt = f"{conversation_history}\nYou: {user_input}\nBot:"
-    
-    try:
-        # Envoi de la requête au modèle
-        response = client.chat.complete(   
-            model=model,  
-            messages=[{"role": "user", "content": prompt}], 
-            max_tokens=150,  # Limite de longueur des réponses
-            temperature=0.7,  # Contrôle de la créativité
-            top_p=0.9,  # Filtrage par probabilité cumulative
-        )
-        return response.choices[0].message.content
-
-    except Exception as e:
-        # Gestion des erreurs
-        print(f"Erreur détaillée : {e}")
-        return "Désolé, une erreur est survenue lors du traitement de votre demande."
-
-# Fonction principale de l'application Streamlit
 def main():
-    # Initialiser l'historique
-    if 'history' not in st.session_state:
-        st.session_state.history = []
+    st.title("RAG Chatbot")
+    st.write("Welcome to the RAG Chatbot powered by Mistral AI 70B!")
 
-    # Titre de l'application
-    st.title("Chatbot avec l'API Mistral")
-
-    # Formulaire pour l'entrée utilisateur
-    form = st.form(key='chat_form')
-    user_input = form.text_input("You:", "")
-    submit_button = form.form_submit_button(label='Send')
-
-    # Gestion de la soumission du formulaire
-    if submit_button and user_input:
-        response = mistral_response(user_input)
-        st.session_state.history.append(f"You: {user_input}")
-        st.session_state.history.append(f"Bot: {response}")
-
-    # Affichage de l'historique des conversations
-    for message in st.session_state.history:
-        st.write(message)
+    user_input = st.text_input("You: ", "")
+    
+    if st.button("Send"):
+        if user_input:
+            processed_input = preprocess_input(user_input)
+            response = query_mistral(processed_input)
+            formatted_response = format_response(response)
+            st.write(f"Chatbot: {formatted_response}")
+        else:
+            st.write("Please enter a message.")
+    
+    uploaded_files = st.file_uploader("Upload CSV files", accept_multiple_files=True, type=["csv"])
+    if st.button("Create Database"):
+        if uploaded_files:
+            csv_folder = "uploaded_dataset"
+            os.makedirs(csv_folder, exist_ok=True)
+            for uploaded_file in uploaded_files:
+                with open(os.path.join(csv_folder, uploaded_file.name), "wb") as f:
+                    f.write(uploaded_file.getbuffer())
+            db_path = "./database"
+            collection = create_vector_db(db_path)
+            logging.info("Database created successfully!")
+            process_csvs(csv_folder, collection)
+            logging.info("CSV files processed successfully!")
+            st.write("Database created successfully!")
+        else:
+            st.write("Please upload CSV files.")
 
 if __name__ == "__main__":
+    db_path = "./database" 
+    create_vector_db(db_path)
     main()
