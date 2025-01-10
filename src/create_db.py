@@ -5,6 +5,17 @@ import pandas as pd
 import os
 import uuid
 from src.retrieve_data import retrieve_data
+import ragatouille
+
+
+# Abdellah
+
+
+
+
+
+
+# Romain
 
 def create_vector_db(db_path):
     # Initialize ChromaDB client with the new configuration

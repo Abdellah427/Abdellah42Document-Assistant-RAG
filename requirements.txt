@@ -6,3 +6,4 @@ pandas
 streamlit
 sentence-transformers
 mistralai
+ragatouille
