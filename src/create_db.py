@@ -3,10 +3,12 @@ from chromadb.config import Settings
 from sentence_transformers import SentenceTransformer
 import pandas as pd
 import os
+import numpy as np
 import uuid
 from src.retrieve_data import retrieve_data
 import ragatouille
 from ragatouille import RAGPretrainedModel
+
 
 
 # Abdellah
@@ -33,7 +35,7 @@ def csv_to_long_text(csv_path):
     return final_text
 
 # Fonction pour créer et sauvegarder l'index vectoriel avec ColBERTv2
-def create_vector_db_colbertv2(csv_path, index_path, chunk_size=400):
+def create_vector_db_colbertv2(csv_path, chunk_size=400):
     # Charger le modèle pré-entraîné ColBERTv2
     RAG = RAGPretrainedModel.from_pretrained("colbert-ir/colbertv2.0")
 
@@ -54,11 +56,12 @@ def create_vector_db_colbertv2(csv_path, index_path, chunk_size=400):
 
     # Sauvegarder l'index dans un fichier
 
-    if not os.path.exists(index_path):
-            os.makedirs(index_path)  # Crée le dossier s'il n'existe pas
-    
-    RAG.save(index_path)
-    print(f"Index saved at: {index_path}")
+    encoded_docs = RAG.encode(documents=[text], bsize=32, max_document_length="auto")
+
+    return encoded_docs, index_name
+
+def save_index(encoded_np, index_path):  
+    np.save(index_path, encoded_np)
 
 # Romain
 

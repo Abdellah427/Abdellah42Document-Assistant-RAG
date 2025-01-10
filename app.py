@@ -69,7 +69,8 @@ def main():
             #collection = create_db.create_vector_db(db_path)
 
             #Celle de ColBERTv2
-            create_db.create_vector_db_colbertv2(csv_path, db_path)
+            encoded_np,index_name = create_db.create_vector_db_colbertv2(csv_path, db_path)
+            create_db.save_index(encoded_np, index_name)
 
             logging.info("Database created successfully!")
             create_db.process_csvs(csv_folder, collection)
