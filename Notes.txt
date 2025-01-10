@@ -1,2 +1,0 @@
-ChromaDB : pour générer la base de données
-Langchain : pour s'assurer que le modèle prenne les informations dans la base de données

@@ -1,8 +1,0 @@
-streamlit
-langchain
-chromadb
-numpy
-pandas
-langchain_community
-os
-pymupdf
