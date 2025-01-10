@@ -9,7 +9,7 @@ import src.llm_interface as llm_interface
 
 def main():
     st.title("RAG Chatbot")
-    st.write("Welcome to the RAG Chatbot powered by Mistral AI 70B!")
+    st.write("Welcome to the RAG Chatbot powered by Mistral AI !")
     history = []
     api_key = "5Lf75S6e7HwH2K4FDO2WViZVCTT0XSMH"
     # Input pour l'utilisateur
