@@ -1,51 +1,46 @@
-# RAG Chatbot
+# Document Assistant RAG
 
-This project implements a Retrieval-Augmented Generation (RAG) chatbot using Streamlit for the user interface, ChromaDB for vector database management, and Langchain to connect to the Mistral AI 70B model for query processing.
+This project implements a documentation assistant based on the Retrieval-Augmented Generation (RAG) model. It is designed to provide augmented information from external data and generate relevant responses for users.
 
-## Project Structure
+## Prerequisites
 
+Before launching the application, make sure you have the following installed on your machine:
+
+- **Docker**: It is required to run the application in a container
+
+## Installation
+
+Clone the repository using the following command in your terminal:
+
+```bash
+git clone https://github.com/Abdellah427/Document-Assistant-RAG.git
+cd Document-Assistant-RAG
 ```
-rag-chatbot
-├── src
-│   ├── app.py               # Main entry point for the Streamlit application
-│   ├── chromadb
-│   │   └── create_db.py     # Functions to create and manage the ChromaDB vector database
-│   ├── langchain
-│   │   └── connect_mistral.py # Connects ChromaDB with the Mistral AI model
-│   └── utils
-│       └── helpers.py       # Utility functions for input processing and response formatting
-├── requirements.txt          # Project dependencies
-└── README.md                 # Project documentation
+
+Build the Docker image from the `Dockerfile` :
+
+```bash
+docker build -t image_rag .
 ```
 
-## Setup Instructions
+This will create a Docker image named image_rag. If you already have a pre-built Docker image, you can skip this step.
 
-1. Clone the repository:
-   ```
-   git clone <repository-url>
-   cd rag-chatbot
-   ```
+## Running the program
 
-2. Install the required dependencies:
-   ```
-   pip install -r requirements.txt
-   ```
+To run the application via Docker, follow these steps:
 
-3. Create the ChromaDB vector database by running:
-   ```
-   python src/chromadb/create_db.py
-   ```
+Launch the Docker container with the following command:
 
-4. Start the Streamlit application:
-   ```
-   streamlit run src/app.py
-   ```
+```bash
+docker run -p 8501:8501 image_rag
+```
 
-## Usage Guidelines
+This will map port 8501 of the container to port 8501 on your local machine.
 
-- Once the application is running, you can interact with the chatbot through the Streamlit interface.
-- Input your queries in the provided text box, and the chatbot will respond based on the information stored in the ChromaDB and processed by the Mistral AI model.
+Once the container is running, you can access the application via:
 
-## Overview of Functionality
+- **Locally** : Open your browser and go to `http://localhost:8501`.
+- **From another device on the same network** : Use the external URL provided by Docker, for example: `http://<votre-ip-publique>:8501`.
 
-The RAG chatbot leverages a combination of retrieval and generation techniques to provide informative responses. The ChromaDB stores relevant vectors, while the Langchain integration allows for seamless querying of the Mistral AI model, ensuring accurate and contextually relevant answers.
+The Streamlit application interface will then be accessible.
+
