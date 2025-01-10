@@ -41,7 +41,8 @@ def create_vector_db_colbertv2(csv_path, index_path, chunk_size=400):
     text = csv_to_long_text(csv_path)
 
     # Récupérer le nom du fichier sans l'extension
-    index_name = os.path.splitext(os.path.basename(csv_path))[0]
+    index_name = os.path.splitext(os.path.basename(csv_path))[0]+ "_colbertv2"
+    
 
     # Indexer le texte
     RAG.index(
@@ -52,6 +53,10 @@ def create_vector_db_colbertv2(csv_path, index_path, chunk_size=400):
     )
 
     # Sauvegarder l'index dans un fichier
+
+    if not os.path.exists(index_path):
+            os.makedirs(index_path)  # Crée le dossier s'il n'existe pas
+    
     RAG.save(index_path)
     print(f"Index saved at: {index_path}")
 
