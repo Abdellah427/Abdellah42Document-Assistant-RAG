@@ -1,9 +1,10 @@
-from chromadb.config import Settings
 from chromadb import Client
+from chromadb.config import Settings
 from sentence_transformers import SentenceTransformer
 import pandas as pd
 import os
 import uuid
+from src.retrieve_data import retrieve_data
 
 def create_vector_db(db_path):
     # Initialize ChromaDB client with the new configuration

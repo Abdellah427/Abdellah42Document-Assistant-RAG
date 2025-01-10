@@ -5,5 +5,5 @@ def preprocess_input(user_input):
 
 def format_response(mistral_response):
     # Function to format the response from the Mistral AI model
-    formatted_response = f"Chatbot: {mistral_response}"
+    formatted_response = f"{mistral_response}"
     return formatted_response

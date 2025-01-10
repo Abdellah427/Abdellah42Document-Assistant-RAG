@@ -5,3 +5,4 @@ numpy
 pandas
 streamlit
 sentence-transformers
+mistralai

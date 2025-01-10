@@ -10,14 +10,15 @@ import src.llm_interface as llm_interface
 def main():
     st.title("RAG Chatbot")
     st.write("Welcome to the RAG Chatbot powered by Mistral AI 70B!")
-
+    history = []
+    api_key = "5Lf75S6e7HwH2K4FDO2WViZVCTT0XSMH"
     # Input pour l'utilisateur
     user_input = st.text_input("You: ", "")
     
     if st.button("Send"):
         if user_input:
             processed_input = helpers.preprocess_input(user_input)
-            response = llm_interface.query_mistral(processed_input)
+            response = llm_interface.query_mistral(processed_input, history, api_key)
             formatted_response = helpers.format_response(response)
             st.write(f"Chatbot: {formatted_response}")
         else:
