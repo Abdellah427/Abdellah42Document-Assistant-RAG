@@ -1,8 +1,7 @@
-streamlit
 langchain
 chromadb
+pydantic
 numpy
 pandas
-langchain_community
-os
-pymupdf
+streamlit
+sentence-transformers
