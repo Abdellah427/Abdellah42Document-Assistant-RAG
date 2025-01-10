@@ -21,12 +21,24 @@ def main():
     def handle_send_message():
         user_input = st.session_state.user_input
         if user_input:
-            processed_input = helpers.preprocess_input(user_input)
-            response = llm_interface.query_mistral(processed_input, st.session_state.history, api_key)
-            formatted_response = helpers.format_response(response)
+            # Prétraitement de l'entrée utilisateur 
+            processed_input = helpers.preprocess_input(user_input) # Mise en minuscule et suppression des espaces inutiles
+
+            # ICI ON DOIT APPELER LA FONCTION les fonction qui ajoute les embeldings les plus proches à response
+
+            # Envoi de la requête au model LLM avec l'historique des échanges et la clé API
+            response = llm_interface.query_mistral(processed_input, st.session_state.history, api_key) 
+
+            # Formatage de la réponse retournée par le LLM
+            formatted_response = helpers.format_response(response) # Pour l'instant on ne fait rien
+
+            # Ajout de l'entrée de l'utilisateur et de la réponse du chatbot à l'historique
             st.session_state.history.append(f"You: {user_input}")
             st.session_state.history.append(f"Chatbot: {formatted_response}")
+
+            # Réinitialisation de l'entrée utilisateur dans l'état de la session (pour effacer le champ de saisie)
             st.session_state.user_input = ""  # Clear input after sending
+
 
     # Champ de saisie pour les messages avec action sur Entrée
     st.text_input("You: ", value="", key="user_input", on_change=handle_send_message)
