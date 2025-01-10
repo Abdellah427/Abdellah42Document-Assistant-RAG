@@ -10,7 +10,7 @@ import ragatouille
 
 # Abdellah
 
-
+#def create_vector_db_colbertv2(db_path):
 
 
 
