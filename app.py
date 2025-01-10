@@ -13,9 +13,7 @@ def main():
     st.title("RAG Chatbot")
     st.write("Welcome to the RAG Chatbot powered by Mistral AI 70B!")
 
-    """
 
-    create_db.create_vector_db(db_path)
     user_input = st.text_input("You: ", "")
     
     if st.button("Send"):
@@ -28,6 +26,7 @@ def main():
             st.write("Please enter a message.")
     
     uploaded_files = st.file_uploader("Upload CSV files", accept_multiple_files=True, type=["csv"])
+    
     if st.button("Create Database"):
         if uploaded_files:
             csv_folder = "uploaded_dataset"
@@ -43,7 +42,8 @@ def main():
             st.write("Database created successfully!")
         else:
             st.write("Please upload CSV files.")
-    """
+    create_db.create_vector_db(db_path)
+    
 
 
 if __name__ == "__main__":
