@@ -3,7 +3,7 @@ def preprocess_input(user_input):
     cleaned_input = user_input.strip().lower()
     return cleaned_input
 
-def format_response(mistral_response):
+def format_response(response):
     # Function to format the response from the Mistral AI model
-    formatted_response = f"{mistral_response}"
+    formatted_response = f"{response}"
     return formatted_response

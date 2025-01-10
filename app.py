@@ -12,15 +12,32 @@ def main():
     st.write("Welcome to the RAG Chatbot powered by Mistral AI !")
     history = []
     api_key = "5Lf75S6e7HwH2K4FDO2WViZVCTT0XSMH"
+
     # Input pour l'utilisateur
     user_input = st.text_input("You: ", "")
     
     if st.button("Send"):
         if user_input:
-            processed_input = helpers.preprocess_input(user_input)
-            response = llm_interface.query_mistral(processed_input, history, api_key)
+
+           
             formatted_response = helpers.format_response(response)
             st.write(f"Chatbot: {formatted_response}")
+
+            # Prétraitement de l'entrée utilisateur
+            processed_input = helpers.preprocess_input(user_input)  # Met en minuscule et supprime les espaces inutiles
+
+            # Récupération de données pertinentes
+            # ICI : response = fonctionrecupererEmbeldinProche
+
+            # Envoi de la requête au modèle LLM via l'API Mistral
+            response = llm_interface.query_mistral(processed_input, history, api_key)
+
+            # Formatage de la réponse du modèle
+            formatted_response = helpers.format_response(response)
+
+            # Affichage de la réponse du chatbot
+            st.write(f"Chatbot: {formatted_response}")
+
         else:
             st.write("Please enter a message.")
     
