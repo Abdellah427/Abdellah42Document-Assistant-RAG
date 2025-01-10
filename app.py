@@ -4,29 +4,40 @@ import logging
 
 import src.create_db as create_db
 import src.helpers as helpers
-import src.retrieve_data as retrieve_data
 import src.llm_interface as llm_interface
 
 def main():
     st.title("RAG Chatbot")
     st.write("Welcome to the RAG Chatbot powered by Mistral AI !")
-    history = []
     api_key = "5Lf75S6e7HwH2K4FDO2WViZVCTT0XSMH"
-    # Input pour l'utilisateur
-    user_input = st.text_input("You: ", "")
-    
-    if st.button("Send"):
+
+    # Initialisation de l'état de session si nécessaire
+    if 'user_input' not in st.session_state:
+        st.session_state['user_input'] = ""
+    if 'history' not in st.session_state:
+        st.session_state['history'] = []
+
+    # Création d'une fonction pour gérer l'envoi des messages
+    def handle_send_message():
+        user_input = st.session_state.user_input
         if user_input:
             processed_input = helpers.preprocess_input(user_input)
-            response = llm_interface.query_mistral(processed_input, history, api_key)
+            response = llm_interface.query_mistral(processed_input, st.session_state.history, api_key)
             formatted_response = helpers.format_response(response)
-            st.write(f"Chatbot: {formatted_response}")
-        else:
-            st.write("Please enter a message.")
-    
+            st.session_state.history.append(f"You: {user_input}")
+            st.session_state.history.append(f"Chatbot: {formatted_response}")
+            st.session_state.user_input = ""  # Clear input after sending
+
+    # Champ de saisie pour les messages avec action sur Entrée
+    st.text_input("You: ", value="", key="user_input", on_change=handle_send_message)
+
+    # Affichage des messages
+    for message in st.session_state.history:
+        st.write(message)
+
     # Téléchargement de fichiers CSV
     uploaded_files = st.file_uploader("Upload CSV files", accept_multiple_files=True, type=["csv"])
-    
+
     if st.button("Create Database"):
         if uploaded_files:
             csv_folder = "uploaded_dataset"
@@ -36,20 +47,16 @@ def main():
             for uploaded_file in uploaded_files:
                 with open(os.path.join(csv_folder, uploaded_file.name), "wb") as f:
                     f.write(uploaded_file.getbuffer())
-            
+
             db_path = "./database"
             # Création de la base de données
-            collection = create_db.create_vector_db(db_path)  # Assurez-vous que cette fonction renvoie un objet valide
+            collection = create_db.create_vector_db(db_path)
             logging.info("Database created successfully!")
-            create_db.process_csvs(csv_folder, collection)  # Assurez-vous que cette fonction est correctement implémentée
+            create_db.process_csvs(csv_folder, collection)
             logging.info("CSV files processed successfully!")
             st.write("Database created successfully!")
         else:
             st.write("Please upload CSV files.")
-    
-    # Note: Vous n'avez plus besoin de rappeler create_db.create_vector_db(db_path) à la fin ici
-    # car il est déjà appelé plus tôt dans le bloc "Create Database"
 
 if __name__ == "__main__":
-    db_path = "./database"  # Il est toujours préférable de définir db_path ici pour une meilleure lisibilité
     main()
