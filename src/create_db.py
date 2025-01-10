@@ -6,14 +6,79 @@ import os
 import uuid
 from src.retrieve_data import retrieve_data
 import ragatouille
+from ragatouille import RAGPretrainedModel
 
 
 # Abdellah
 
-#def create_vector_db_colbertv2(db_path):
+def csv_to_long_text(csv_path):
+    # Charger le fichier CSV
+    df = pd.read_csv(csv_path)
 
+    # Initialiser une liste pour stocker les lignes de texte
+    text_output = []
 
+    # Parcourir chaque ligne du DataFrame
+    for index, row in df.iterrows():
+        row_text = []
+        for column in df.columns:
+            # Ajouter chaque colonne avec sa valeur dans la forme "colonne: valeur"
+            row_text.append(f"{column}: {row[column]}")
+        # Joindre les éléments de la ligne et les ajouter au texte final
+        text_output.append(" ".join(row_text))
 
+    # Joindre toutes les lignes de texte pour obtenir le texte final
+    final_text = "\n".join(text_output)
+
+    return final_text
+
+import pandas as pd
+from colbert import RAGPretrainedModel
+
+# Fonction pour transformer le CSV en texte long
+def csv_to_long_text(csv_path):
+    # Charger le fichier CSV
+    df = pd.read_csv(csv_path)
+
+    # Initialiser une liste pour stocker les lignes de texte
+    text_output = []
+
+    # Parcourir chaque ligne du DataFrame
+    for index, row in df.iterrows():
+        row_text = []
+        for column in df.columns:
+            # Ajouter chaque colonne avec sa valeur dans la forme "colonne: valeur"
+            row_text.append(f"{column}: {row[column]}")
+        # Joindre les éléments de la ligne et les ajouter au texte final
+        text_output.append(" ".join(row_text))
+
+    # Joindre toutes les lignes de texte pour obtenir le texte final
+    final_text = "\n".join(text_output)
+
+    return final_text
+
+# Fonction pour créer et sauvegarder l'index vectoriel avec ColBERTv2
+def create_vector_db_colbertv2(csv_path, index_path, chunk_size=400):
+    # Charger le modèle pré-entraîné ColBERTv2
+    RAG = RAGPretrainedModel.from_pretrained("colbert-ir/colbertv2.0")
+
+    # Convertir le CSV en texte long
+    text = csv_to_long_text(csv_path)
+
+    # Récupérer le nom du fichier sans l'extension
+    index_name = os.path.splitext(os.path.basename(csv_path))[0]
+
+    # Indexer le texte
+    RAG.index(
+        collection=[text],  # Utiliser le texte généré à partir du CSV
+        index_name=index_name,  # Nom de l'index
+        max_document_length=chunk_size,  # Limite de longueur des documents
+        split_documents=True,  # Fractionner les documents trop longs
+    )
+
+    # Sauvegarder l'index dans un fichier
+    RAG.save(index_path)
+    print(f"Index saved at: {index_path}")
 
 # Romain
 

@@ -60,9 +60,17 @@ def main():
                 with open(os.path.join(csv_folder, uploaded_file.name), "wb") as f:
                     f.write(uploaded_file.getbuffer())
 
+            csv_path = os.path.join(csv_folder, uploaded_file.name)
+
             db_path = "./database"
             # Création de la base de données
-            collection = create_db.create_vector_db(db_path)
+
+            #Celle de Romain
+            #collection = create_db.create_vector_db(db_path)
+
+            #Celle de ColBERTv2
+            create_db.create_vector_db_colbertv2(csv_path, db_path)
+
             logging.info("Database created successfully!")
             create_db.process_csvs(csv_folder, collection)
             logging.info("CSV files processed successfully!")
