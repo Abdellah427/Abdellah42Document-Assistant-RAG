@@ -7,5 +7,4 @@ streamlit
 sentence-transformers
 mistralai
 ragatouille
-transformers>=4.0.0
-pillow>=8.0.0
+
