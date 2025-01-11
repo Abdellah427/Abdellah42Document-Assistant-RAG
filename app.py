@@ -1,6 +1,7 @@
 import streamlit as st
 import os
 import logging
+from ragatouille import RAGPretrainedModel
 
 import src.create_db as create_db
 import src.helpers as helpers
