@@ -63,16 +63,17 @@ def main():
             csv_path = os.path.join(csv_folder, uploaded_file.name)
 
             db_path = "./database"
+            os.makedirs(db_path, exist_ok=True)
             # Création de la base de données
 
             #Celle de Romain
-            """
-            collection = create_db.create_vector_db(db_path)
-            logging.info("Database created successfully!")
-            create_db.process_csvs(csv_folder, collection)
-            logging.info("CSV files processed successfully!")
-            st.write("Database created successfully!")
-            """
+            
+            #collection = create_db.create_vector_db(db_path)
+            #logging.info("Database created successfully!")
+            #create_db.process_csvs(csv_folder, collection)
+            #logging.info("CSV files processed successfully!")
+            #st.write("Database created successfully!")
+            
 
             #Celle de ColBERTv2
             index_name = create_db.create_vector_db_colbertv2(csv_path)
