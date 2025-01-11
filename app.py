@@ -77,7 +77,7 @@ def main():
             
 
             #Celle de ColBERTv2
-            index_name = create_db.create_vector_db_colbertv2(csv_path,db_path)
+            #index_name = create_db.create_vector_db_colbertv2(csv_path,db_path)
             
 
             
