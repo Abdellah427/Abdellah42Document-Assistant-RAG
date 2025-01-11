@@ -9,4 +9,3 @@ mistralai
 ragatouille
 transformers>=4.0.0
 pillow>=8.0.0
-https://downloads.cs.stanford.edu/nlp/data/colbert/colbertv2/colbertv2.0.tar.gz
