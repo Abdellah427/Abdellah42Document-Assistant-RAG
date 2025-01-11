@@ -47,7 +47,7 @@ def load_model_Colbert():
 
 
 # Fonction pour créer et sauvegarder l'index vectoriel avec ColBERTv2
-def create_vector_db_colbertv2(csv_path, db_path,chunk_size=400):
+def create_vector_db_colbertv2(csv_path, db_path):
     # Charger le modèle pré-entraîné ColBERTv2
     if RAG_Corbert is None:
         load_model_Colbert()
@@ -64,7 +64,7 @@ def create_vector_db_colbertv2(csv_path, db_path,chunk_size=400):
     RAG_Corbert.index(
         collection=[text],  # Utiliser le texte généré à partir du CSV
         index_name=index_name,  # Nom de l'index
-        max_document_length=chunk_size,  # Limite de longueur des documents
+        max_document_length=400,  # Limite de longueur des documents
         split_documents=True,  # Fractionner les documents trop longs
     )
 
