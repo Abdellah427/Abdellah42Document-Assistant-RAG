@@ -8,6 +8,7 @@ import uuid
 from src.retrieve_data import retrieve_data
 import ragatouille
 from ragatouille import RAGPretrainedModel
+import shutil
 
 
 
@@ -56,12 +57,16 @@ def create_vector_db_colbertv2(csv_path, chunk_size=400):
 
     # Sauvegarder l'index dans un fichier
 
-    encoded_docs = RAG.encode(documents=[text], bsize=32, max_document_length="auto")
+    fichier_source = '.ragatouille/colbert/indexes/'+index_name
+    destination = './dataset/'+index_name
 
-    return encoded_docs, index_name
+    # Déplace le fichier vers le nouveau répertoire
+    shutil.move(fichier_source, destination)
 
-def save_index(encoded_np, db_path, index_name):  
-    np.save(os.path.join(db_path, index_name), encoded_np)
+
+    return index_name
+
+
 
 # Romain
 
