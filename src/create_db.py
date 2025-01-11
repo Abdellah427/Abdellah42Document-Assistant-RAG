@@ -35,10 +35,21 @@ def csv_to_long_text(csv_path):
 
     return final_text
 
+RAG_Corbert = None
+def load_model_Colbert():
+    global RAG_Corbert
+    if RAG_Corbert is None:  # Charger le modèle uniquement s'il n'est pas encore chargé
+        print("Chargement du modèle ColBERTv2...")
+        RAG_Corbert = RAGPretrainedModel.from_pretrained("colbert-ir/colbertv2.0")
+        print("Modèle ColBERTv2 chargé avec succès !")
+    return RAG_Corbert
+
+
+
 # Fonction pour créer et sauvegarder l'index vectoriel avec ColBERTv2
 def create_vector_db_colbertv2(csv_path, chunk_size=400):
     # Charger le modèle pré-entraîné ColBERTv2
-    RAG = RAGPretrainedModel.from_pretrained("colbert-ir/colbertv2.0")
+    
 
     # Convertir le CSV en texte long
     text = csv_to_long_text(csv_path)
@@ -48,7 +59,7 @@ def create_vector_db_colbertv2(csv_path, chunk_size=400):
     
 
     # Indexer le texte
-    RAG.index(
+    RAG_Corbert.index(
         collection=[text],  # Utiliser le texte généré à partir du CSV
         index_name=index_name,  # Nom de l'index
         max_document_length=chunk_size,  # Limite de longueur des documents
