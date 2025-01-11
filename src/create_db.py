@@ -47,8 +47,10 @@ def load_model_Colbert():
 
 
 # Fonction pour créer et sauvegarder l'index vectoriel avec ColBERTv2
-def create_vector_db_colbertv2(csv_path, chunk_size=400):
+def create_vector_db_colbertv2(csv_path, db_path,chunk_size=400):
     # Charger le modèle pré-entraîné ColBERTv2
+    if RAG_Corbert is None:
+        load_model_Colbert()
     
 
     # Convertir le CSV en texte long
