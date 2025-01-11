@@ -65,7 +65,7 @@ def main():
 
             csv_path = os.path.join(csv_folder, uploaded_file.name)
 
-            db_path = "./database/"
+            db_path = "./database"
             os.makedirs(db_path, exist_ok=True)
             # Création de la base de données
 
@@ -75,6 +75,7 @@ def main():
             #logging.info("Database created successfully!")
             #create_db.process_csvs(csv_folder, collection)
             #logging.info("CSV files processed successfully!")
+            
             #st.write("Database created successfully!")
             
 
