@@ -63,7 +63,7 @@ def main():
 
             csv_path = os.path.join(csv_folder, uploaded_file.name)
 
-            db_path = "./database"
+            db_path = "./database/"
             os.makedirs(db_path, exist_ok=True)
             # Création de la base de données
 
@@ -77,7 +77,7 @@ def main():
             
 
             #Celle de ColBERTv2
-            #index_name = create_db.create_vector_db_colbertv2(csv_path,db_path)
+            index_name = create_db.create_vector_db_colbertv2(csv_path,db_path)
             
 
             
