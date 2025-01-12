@@ -15,7 +15,7 @@ import shutil
 # Abdellah
 
 
-RAG_Corbert = None
+#RAG_Corbert = None
 def load_model_Colbert():
     global RAG_Corbert
     if RAG_Corbert is None:  # Charger le modèle uniquement s'il n'est pas encore chargé
