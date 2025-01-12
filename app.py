@@ -61,7 +61,7 @@ def main():
     if st.button("Create Database"):
         if uploaded_files:
             csv_paths = []
-            csv_folder = "uploaded_dataset"
+            csv_folder = "uploaded_datasets"
             os.makedirs(csv_folder, exist_ok=True)
 
             db_path = "database"
@@ -76,6 +76,7 @@ def main():
 
             uploaded_file = uploaded_files[0]
             csv_path = os.path.join(csv_folder, uploaded_file.name)
+            db_path = os.path.join(db_path, uploaded_file.name)
 
             
             # Création de la base de données

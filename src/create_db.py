@@ -67,8 +67,8 @@ def create_vector_db_colbertv2(csv_path, db_path):
 
     # Sauvegarder l'index dans un fichier
 
-    fichier_source = './ragatouille/colbert/indexes/'+index_name
-    destination = db_path+index_name
+    fichier_source = '../ragatouille/colbert/indexes/'+index_name
+    destination = db_path
 
     # Déplace le fichier vers le nouveau répertoire
     shutil.copy(fichier_source, destination)

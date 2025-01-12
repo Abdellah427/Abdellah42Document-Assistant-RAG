@@ -7,5 +7,5 @@ streamlit
 sentence-transformers
 mistralai
 ragatouille
-faiss-gpu==1.7.2
+faiss-gpu-cu12
 
