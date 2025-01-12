@@ -124,7 +124,7 @@ def process_csvs(csv_folder, collection):
 
 if __name__ == "__main__":
 
-    #load_model_Colbert()
+    load_model_Colbert()
 
     #collection = create_vector_db(db_path)
     #process_csvs(csv_folder, collection)
