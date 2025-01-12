@@ -14,7 +14,7 @@ def main():
     st.write("Welcome to the RAG Chatbot powered by Mistral AI !")
     api_key = "5Lf75S6e7HwH2K4FDO2WViZVCTT0XSMH"
     
-    create_db.load_model_Colbert()
+    
 
     # Initialisation de l'état de session si nécessaire
     if 'user_input' not in st.session_state:

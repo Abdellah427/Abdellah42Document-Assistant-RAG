@@ -15,7 +15,7 @@ import shutil
 # Abdellah
 
 
-#RAG_Corbert = None
+RAG_Corbert = None
 def load_model_Colbert():
     global RAG_Corbert
     if RAG_Corbert is None:  # Charger le modèle uniquement s'il n'est pas encore chargé
@@ -123,7 +123,8 @@ def process_csvs(csv_folder, collection):
                     print(f"Processed row {index + 1} of {len(df)} in file {csv_file}")
 
 if __name__ == "__main__":
-    db_path = "./database"
-    csv_folder = "./uploaded_dataset"
-    #ollection = create_vector_db(db_path)
+
+    #load_model_Colbert()
+
+    #collection = create_vector_db(db_path)
     #process_csvs(csv_folder, collection)
