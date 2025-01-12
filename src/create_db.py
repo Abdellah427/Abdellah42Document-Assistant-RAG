@@ -47,9 +47,9 @@ def csv_to_list_str(csv_path):
 # Fonction pour créer et sauvegarder l'index vectoriel avec ColBERTv2
 def create_vector_db_colbertv2(csv_path, db_path):
     # Charger le modèle pré-entraîné ColBERTv2
-    if RAG_Corbert is None:
-        load_model_Colbert()
-    
+    #if RAG_Corbert is None:
+    #    load_model_Colbert()
+    RAG_Corbert = RAGPretrainedModel.from_pretrained("colbert-ir/colbertv2.0")
     # Convertir le CSV en texte long
     liste = csv_to_list_str(csv_path)
 
