@@ -21,13 +21,8 @@ def load_model_colbert():
     global RAG_Corbert
 
     # Vérifier si CUDA est disponible
-    if torch.cuda.is_available():
-        device = "cuda"  # Utiliser le GPU
-        print("CUDA est disponible. Chargement du modèle sur GPU...")
-    else:
-        device = "cpu"  # Utiliser le CPU
-        print("CUDA n'est pas disponible. Chargement du modèle sur CPU...")
-    RAG_Corbert = RAGPretrainedModel.from_pretrained("colbert-ir/colbertv2.0", device=device)
+    
+    RAG_Corbert = RAGPretrainedModel.from_pretrained("colbert-ir/colbertv2.0")
 
 
 
@@ -66,7 +61,7 @@ def create_vector_db_colbertv2(csv_path, db_path):
 
     RAG_Corbert.index(
         collection=liste,  # Utiliser le texte généré à partir du CSV
-        index_name="test",  # Nom de l'index
+        index_name="testtt",  # Nom de l'index
         max_document_length=100,  # Limite de longueur des documents
         split_documents=True,  # Fractionner les documents trop longs
         use_faiss=True,
