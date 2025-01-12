@@ -125,5 +125,5 @@ def process_csvs(csv_folder, collection):
 if __name__ == "__main__":
     db_path = "./database"
     csv_folder = "./uploaded_dataset"
-    collection = create_vector_db(db_path)
-    process_csvs(csv_folder, collection)
+    #ollection = create_vector_db(db_path)
+    #process_csvs(csv_folder, collection)
