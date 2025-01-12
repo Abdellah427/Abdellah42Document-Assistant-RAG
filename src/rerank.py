@@ -4,6 +4,7 @@ from mistralai import Mistral
 import time
 import pandas as pd
 import re
+import logging
 
 
 def load_faiss_index(embeddings):
@@ -37,6 +38,7 @@ def rerank_results(query, results, texts, client, model="mistral-large-latest"):
 
 def search_and_rerank(query, client, index, texts, top_k=5):
     # Recherche initiale
+    logging.info(f"Starting search and reranking for query: {query}")
     query_embedding = client.embeddings.create(model="mistral-embed", inputs=[query]).data[0].embedding
     distances, indices = index.search(np.array([query_embedding]), top_k)
     time.sleep(2)
