@@ -56,20 +56,28 @@ def main():
     # Téléchargement de fichiers CSV
     uploaded_files = st.file_uploader("Upload CSV files", accept_multiple_files=True, type=["csv"])
 
+    
+
     if st.button("Create Database"):
         if uploaded_files:
+            csv_paths = []
             csv_folder = "uploaded_dataset"
             os.makedirs(csv_folder, exist_ok=True)
 
+            db_path = "database"
+            os.makedirs(db_path, exist_ok=True)
+
             # Enregistrer les fichiers téléchargés
             for uploaded_file in uploaded_files:
+                file_path = os.path.join(csv_folder, uploaded_file.name)
                 with open(os.path.join(csv_folder, uploaded_file.name), "wb") as f:
                     f.write(uploaded_file.getbuffer())
+                csv_paths.append(file_path)
 
+            uploaded_file = uploaded_files[0]
             csv_path = os.path.join(csv_folder, uploaded_file.name)
 
-            db_path = "./database"
-            os.makedirs(db_path, exist_ok=True)
+            
             # Création de la base de données
 
             #Celle de Romain
