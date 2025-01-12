@@ -7,23 +7,7 @@ import src.create_db as create_db
 import src.helpers as helpers
 import src.llm_interface as llm_interface
 
-##################################################
-class StreamToLogger(io.StringIO):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._buffer = ""
 
-    def write(self, message):
-        super().write(message)
-        self._buffer += message
-
-    def getvalue(self):
-        return self._buffer
-
-# Redirection de sys.stdout vers notre classe
-stream_to_logger = StreamToLogger()
-sys.stdout = stream_to_logger
-###################################################
 
 def main():
     st.title("RAG Chatbot")
@@ -68,7 +52,6 @@ def main():
     for message in st.session_state.history:
         st.write(message)
 
-    st.text(stream_to_logger.getvalue())
 
     # Téléchargement de fichiers CSV
     uploaded_files = st.file_uploader("Upload CSV files", accept_multiple_files=True, type=["csv"])
