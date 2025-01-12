@@ -1,18 +1,36 @@
 import streamlit as st
 import os
-import logging
+import sys
 
 
 import src.create_db as create_db
 import src.helpers as helpers
 import src.llm_interface as llm_interface
 
+##################################################
+class StreamToLogger(io.StringIO):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._buffer = ""
+
+    def write(self, message):
+        super().write(message)
+        self._buffer += message
+
+    def getvalue(self):
+        return self._buffer
+
+# Redirection de sys.stdout vers notre classe
+stream_to_logger = StreamToLogger()
+sys.stdout = stream_to_logger
+###################################################
+
 def main():
     st.title("RAG Chatbot")
     st.write("Welcome to the RAG Chatbot powered by Mistral AI !")
     api_key = "5Lf75S6e7HwH2K4FDO2WViZVCTT0XSMH"
-
-    #create_db.load_model_Colbert()
+    
+    create_db.load_model_Colbert()
 
     # Initialisation de l'état de session si nécessaire
     if 'user_input' not in st.session_state:
@@ -50,6 +68,8 @@ def main():
     for message in st.session_state.history:
         st.write(message)
 
+    st.text(stream_to_logger.getvalue())
+
     # Téléchargement de fichiers CSV
     uploaded_files = st.file_uploader("Upload CSV files", accept_multiple_files=True, type=["csv"])
 
@@ -80,7 +100,7 @@ def main():
             
 
             #Celle de ColBERTv2
-            index_name = create_db.create_vector_db_colbertv2(csv_path,db_path)
+            #index_name = create_db.create_vector_db_colbertv2(csv_path,db_path)
             
 
             

@@ -14,26 +14,6 @@ import shutil
 
 # Abdellah
 
-def csv_to_long_text(csv_path):
-    # Charger le fichier CSV
-    df = pd.read_csv(csv_path)
-
-    # Initialiser une liste pour stocker les lignes de texte
-    text_output = []
-
-    # Parcourir chaque ligne du DataFrame
-    for index, row in df.iterrows():
-        row_text = []
-        for column in df.columns:
-            # Ajouter chaque colonne avec sa valeur dans la forme "colonne: valeur"
-            row_text.append(f"{column}: {row[column]}")
-        # Joindre les éléments de la ligne et les ajouter au texte final
-        text_output.append(" ".join(row_text))
-
-    # Joindre toutes les lignes de texte pour obtenir le texte final
-    final_text = "\n".join(text_output)
-
-    return final_text
 
 RAG_Corbert = None
 def load_model_Colbert():
@@ -46,38 +26,7 @@ def load_model_Colbert():
 
 
 
-# Fonction pour créer et sauvegarder l'index vectoriel avec ColBERTv2
-def create_vector_db_colbertv2(csv_path, db_path):
-    # Charger le modèle pré-entraîné ColBERTv2
-    #if RAG_Corbert is None:
-    #    load_model_Colbert()
-    
-    RAG_Corbert = RAGPretrainedModel.from_pretrained("colbert-ir/colbertv2.0")
-    # Convertir le CSV en texte long
-    text = csv_to_long_text(csv_path)
 
-    # Récupérer le nom du fichier sans l'extension
-    index_name = os.path.splitext(os.path.basename(csv_path))[0]+ "_colbertv2"
-    
-    print(index_name)
-    # Indexer le texte
-    RAG_Corbert.index(
-        collection=[text],  # Utiliser le texte généré à partir du CSV
-        index_name=index_name,  # Nom de l'index
-        max_document_length=400,  # Limite de longueur des documents
-        split_documents=True,  # Fractionner les documents trop longs
-    )
-
-    # Sauvegarder l'index dans un fichier
-
-    fichier_source = './ragatouille/colbert/indexes/'+index_name
-    destination = db_path+index_name
-
-    # Déplace le fichier vers le nouveau répertoire
-    shutil.copy(fichier_source, destination)
-
-
-    return index_name
 
 
 
