@@ -9,6 +9,7 @@ from src.retrieve_data import retrieve_data
 import ragatouille
 from ragatouille import RAGPretrainedModel
 import shutil
+import torch
 
 
 
@@ -16,13 +17,19 @@ import shutil
 
 
 RAG_Corbert = None
-def load_model_Colbert():
+def load_model_colbert():
     global RAG_Corbert
-    if RAG_Corbert is None:  # Charger le modèle uniquement s'il n'est pas encore chargé
-        print("Chargement du modèle ColBERTv2...")
-        RAG_Corbert = RAGPretrainedModel.from_pretrained("colbert-ir/colbertv2.0")
-        print("Modèle ColBERTv2 chargé avec succès !")
-    return RAG_Corbert
+
+    # Vérifier si CUDA est disponible
+    if torch.cuda.is_available():
+        device = "cuda"  # Utiliser le GPU
+        print("CUDA est disponible. Chargement du modèle sur GPU...")
+    else:
+        device = "cpu"  # Utiliser le CPU
+        print("CUDA n'est pas disponible. Chargement du modèle sur CPU...")
+    RAG_Corbert = RAGPretrainedModel.from_pretrained("colbert-ir/colbertv2.0", device=device)
+
+
 
 def csv_to_list_str(csv_path):
     # Charger le fichier CSV
@@ -47,9 +54,9 @@ def csv_to_list_str(csv_path):
 # Fonction pour créer et sauvegarder l'index vectoriel avec ColBERTv2
 def create_vector_db_colbertv2(csv_path, db_path):
     # Charger le modèle pré-entraîné ColBERTv2
-    #if RAG_Corbert is None:
-    #    load_model_Colbert()
-    RAG_Corbert = RAGPretrainedModel.from_pretrained("colbert-ir/colbertv2.0")
+    if RAG_Corbert is None:
+        load_model_colbert()
+    
     # Convertir le CSV en texte long
     liste = csv_to_list_str(csv_path)
 
@@ -67,7 +74,7 @@ def create_vector_db_colbertv2(csv_path, db_path):
 
     # Sauvegarder l'index dans un fichier
 
-    #fichier_source = '../ragatouille/colbert/indexes/'+index_name
+    #fichier_source = '.ragatouille/colbert/indexes/'+index_name
     #destination = db_path
 
     # Déplace le fichier vers le nouveau répertoire
