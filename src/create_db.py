@@ -59,7 +59,7 @@ def create_vector_db_colbertv2(csv_path, db_path):
 
     RAG_Corbert.index(
         collection=liste,  # Utiliser le texte généré à partir du CSV
-        index_name=index_name,  # Nom de l'index
+        index_name="test",  # Nom de l'index
         max_document_length=100,  # Limite de longueur des documents
         split_documents=True,  # Fractionner les documents trop longs
         use_faiss=True,
@@ -67,11 +67,11 @@ def create_vector_db_colbertv2(csv_path, db_path):
 
     # Sauvegarder l'index dans un fichier
 
-    fichier_source = '../ragatouille/colbert/indexes/'+index_name
-    destination = db_path
+    #fichier_source = '../ragatouille/colbert/indexes/'+index_name
+    #destination = db_path
 
     # Déplace le fichier vers le nouveau répertoire
-    shutil.copy(fichier_source, destination)
+    #shutil.copy(fichier_source, destination)
 
 
     return index_name
