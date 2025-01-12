@@ -28,3 +28,11 @@ def query_mistral(user_input,history,api_key):
         # Gestion des erreurs
         print(f"Erreur détaillée : {e}")
         return "Désolé, une erreur est survenue lors du traitement de votre demande."
+    
+
+
+def load_mistral():
+    api_key = "uvPKnZ4G0YFoM6KBIUkgF0KzE8dpmsgb"
+    model = "mistral-embed"
+    client = Mistral(api_key=api_key)
+    return client, model

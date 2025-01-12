@@ -9,7 +9,10 @@ from src.retrieve_data import retrieve_data
 import ragatouille
 from ragatouille import RAGPretrainedModel
 import shutil
-
+from mistralai import Mistral
+import faiss
+import time
+import re
 
 
 # Abdellah
@@ -130,3 +133,57 @@ if __name__ == "__main__":
     csv_folder = "./uploaded_dataset"
     collection = create_vector_db(db_path)
     process_csvs(csv_folder, collection)
+
+
+
+##Simon
+
+
+# def save_embeddings_to_chroma(data, db_path="./data/chroma_db"):
+#     chroma_client = Client(Settings(persist_directory=db_path))
+#     collection = chroma_client.get_or_create_collection(name="movie_embeddings")
+#     for idx, row in data.iterrows():
+#         collection.add(
+#             documents=[row['plot_synopsis']],
+#             metadatas={"id": row.name},
+#             embeddings=[row['embeddings']]
+#         )
+#     chroma_client.persist()
+
+#     print("embeddings saved")
+
+def get_and_save_embeddings_to_chroma(texts, client, db_path, model="mistral-embed", chunk_size=512, delay=1):
+
+  # Create ChromaDB client
+  chroma_client = Client(Settings(persist_directory=db_path))
+
+  # Check if collection exists (optional)
+  collection_name = "text_embeddings"
+  if collection_name not in chroma_client.list_collections():
+      collection = chroma_client.create_collection(collection_name)
+  else:
+      collection = chroma_client.get_collection(collection_name)
+
+  # Process text chunks
+  for i, chunk in enumerate(chunker(texts, chunk_size)):
+    # Generate embeddings for the chunk
+    embeddings_response = client.embeddings.create(model=model, inputs=chunk)
+    embeddings = [d.embedding for d in embeddings_response.data]
+
+    # Add embeddings and metadata to ChromaDB
+    for j, text in enumerate(chunk):
+      metadata = {"text": text}  # Add relevant metadata (e.g., text itself)
+      collection.add(ids=[f"{i}_{j}"], embeddings=embeddings[j:j+1], metadatas=[metadata])
+
+    print(f"Processed chunk {i+1} of {len(texts) // chunk_size + 1}")
+    time.sleep(delay)
+
+  chroma_client.persist()
+  print("Embeddings saved successfully to ChromaDB!")
+  return embeddings
+
+# Helper function to create chunks (avoids index out of bounds)
+def chunker(iterable, chunksize):
+  """Yields successive n-sized chunks from an iterable."""
+  for i in range(0, len(iterable), chunksize):
+    yield iterable[i:i + chunksize]

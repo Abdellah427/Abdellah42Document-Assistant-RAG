@@ -2,7 +2,7 @@ import streamlit as st
 import os
 import logging
 
-
+import src.rerank as rerank
 import src.create_db as create_db
 import src.helpers as helpers
 import src.llm_interface as llm_interface
@@ -29,8 +29,22 @@ def main():
 
             # ICI ON DOIT APPELER LA FONCTION les fonction qui ajoute les embeldings les plus proches à response
 
+
+            ##test simon  rerank
+
+            client, model = llm_interface.load_mistral()
+            texts = create_db.csv_to_long_text("uploaded_dataset/wiki_movie_plots_deduped.csv")
+            # embeddings = rerank.get_embeddings_by_chunks(texts, client, model)
+            embeddings = create_db.get_and_save_embeddings_to_chroma(texts, client,"./database")
+            index = rerank.load_faiss_index(embeddings)
+            results= rerank.search_and_rerank(processed_input, client, index, texts)
+
+
+
             # Envoi de la requête au model LLM avec l'historique des échanges et la clé API
-            response = llm_interface.query_mistral(processed_input, st.session_state.history, api_key) 
+            # response = llm_interface.query_mistral(processed_input, st.session_state.history, api_key) 
+
+            response = llm_interface.query_mistral(results, st.session_state.history, api_key) 
 
             # Formatage de la réponse retournée par le LLM
             formatted_response = helpers.format_response(response) # Pour l'instant on ne fait rien
