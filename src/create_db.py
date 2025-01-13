@@ -71,14 +71,8 @@ def create_vector_db_colbertv2(csv_path, db_path):
     fichier_source = index_path
     destination_path = db_path+"/"+index_name
 
-    # Déplace le fichier vers le nouveau répertoire
-    if os.path.exists(destination_path):
-        counter = 1
-
-        # Ajouter un suffixe numérique jusqu'à trouver un nom disponible
-        while os.path.exists(destination_path):
-            destination_path = os.path.join(db_path+"/", f"{index_name}_{counter}")
-            counter += 1
+    if os.path.exists(destination_path) and os.path.isdir(destination_path):
+        shutil.rmtree(destination_path)
     shutil.move(fichier_source, destination_path)
 
     RAG_Corbert=RAGPretrainedModel.from_index(destination_path, n_gpu=-1, verbose=1)
