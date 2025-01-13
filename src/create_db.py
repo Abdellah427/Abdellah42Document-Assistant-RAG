@@ -56,7 +56,7 @@ def create_vector_db_colbertv2(csv_path, db_path):
     liste = csv_to_list_str(csv_path)
 
     # Récupérer le nom du fichier sans l'extension
-    index_name = os.path.splitext(os.path.basename(csv_path))[0]+"_colbertv2"
+    index_name = os.path.splitext(os.path.splitext(os.path.basename(csv_path))[0])+"_colbertv2"
     
 
     index_path=RAG_Corbert.index(
@@ -69,17 +69,24 @@ def create_vector_db_colbertv2(csv_path, db_path):
     # Sauvegarder l'index dans un fichier
 
     fichier_source = index_path
-    destination = db_path
+    destination_path = db_path+"/"+index_name
 
     # Déplace le fichier vers le nouveau répertoire
-    shutil.move(fichier_source, destination)
+    if os.path.exists(destination_path):
+        counter = 1
 
-    RAG_Corbert=RAGPretrainedModel.from_index(destination, n_gpu=-1, verbose=1)
+        # Ajouter un suffixe numérique jusqu'à trouver un nom disponible
+        while os.path.exists(destination_path):
+            destination_path = os.path.join(db_path+"/", f"{index_name}_{counter}")
+            counter += 1
+    shutil.move(fichier_source, destination_path)
 
-    return index_name
+    RAG_Corbert=RAGPretrainedModel.from_index(destination_path, n_gpu=-1, verbose=1)
+
+    return destination_path
 
 
-def query_vector_db_colbertv2(index_name, query_text, n_results=5):
+def query_vector_db_colbertv2(query_text, n_results=5):
     global RAG_Corbert
     # Charger le modèle pré-entraîné ColBERTv2
     if RAG_Corbert is None:
