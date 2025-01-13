@@ -17,7 +17,7 @@ def apply_styles():
     # Add a small description with your school logo below
     st.markdown("""
         <div style="text-align: center; padding: 10px;">
-            <img src="img/logo.png" alt="CY Tech Logo" width="250"/>
+            <img src="../img/logo.png" alt="CY Tech Logo" width="250"/>
         </div>
     """, unsafe_allow_html=True)
 
