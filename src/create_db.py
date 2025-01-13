@@ -143,7 +143,6 @@ def process_csvs(csv_folder, collection):
 
 if __name__ == "__main__":
 
-    if RAG_Corbert is None:
-        load_model_colbert()
+    
     #collection = create_vector_db(db_path)
     #process_csvs(csv_folder, collection)
