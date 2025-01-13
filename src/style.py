@@ -15,20 +15,6 @@ def apply_styles():
         <p style="text-align: center; font-size: 16px; color: #777;">Interact with the AI and get insightful answers to your queries.</p>
     """, unsafe_allow_html=True)
 
-    # Add a small description with your school logo in the top-left corner
-    logo_path = "./img/logo.png"  # Correct path relative to app.py
-    if os.path.exists(logo_path):  # Check if the file exists
-        st.markdown("""
-            <div style="position: fixed; top: 20px; left: 20px; z-index: 999;">
-                <img src="./img/logo.png" alt="CY Tech Logo" width="150"/>
-            </div>
-        """, unsafe_allow_html=True)
-    else:
-        st.warning("Logo file not found!")
-
-    # Separator for breaking sections
-    st.markdown("<hr>", unsafe_allow_html=True)
-
     # Additional page layout and styling adjustments
     st.markdown("""
         <style>
