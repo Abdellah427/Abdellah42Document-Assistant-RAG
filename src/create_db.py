@@ -57,7 +57,7 @@ def create_vector_db_colbertv2(csv_path: str, db_path: str,max_document_length=1
     index_path = RAG_Corbert.index(
         collection=documents,
         max_document_length=max_document_length,  # Truncate documents longer than 100 tokens
-        split_documents=True,    # Automatically split documents if too large
+        split_documents=False,    # Automatically split documents if too large
         use_faiss=True           # Use FAISS for efficient vector search
     )
 
