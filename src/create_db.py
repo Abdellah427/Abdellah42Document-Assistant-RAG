@@ -73,21 +73,20 @@ def create_vector_db_colbertv2(csv_path, db_path):
 
     # Sauvegarder l'index dans un fichier
 
-    fichier_source = index_path
-    destination_path = db_path+"/"+index_name
+    #fichier_source = index_path
+    #destination_path = db_path+"/"+index_name
+
+
+    #if os.path.exists(destination_path) and os.path.isdir(destination_path):
+    #    shutil.rmtree(destination_path)
 
     
 
-    if os.path.exists(destination_path) and os.path.isdir(destination_path):
-        shutil.rmtree(destination_path)
+    #shutil.move(fichier_source, destination_path)
 
-    return "fichier_source: " + fichier_source + " destination_path: " + destination_path
+    #RAG_Corbert=RAGPretrainedModel.from_index(destination_path, n_gpu=-1, verbose=1)
 
-    shutil.move(fichier_source, destination_path)
-
-    RAG_Corbert=RAGPretrainedModel.from_index(destination_path, n_gpu=-1, verbose=1)
-
-    return destination_path
+    return index_path
 
 
 def query_vector_db_colbertv2(query_text, n_results=5):
