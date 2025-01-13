@@ -75,7 +75,7 @@ def display_documents():
             "Select a document to view:",
             options=doc_labels,
         )
-        selected_doc_index = doc_labels.index(selected_label)
+        selected_doc_index = doc_labels.index(selected_doc)
         selected_doc = st.session_state['docs'][selected_doc_index]
         st.write("Selected Document:")
         st.write(selected_doc)
