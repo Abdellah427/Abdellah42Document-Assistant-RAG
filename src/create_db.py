@@ -5,7 +5,6 @@ import pandas as pd
 import os
 import numpy as np
 import uuid
-from src.retrieve_data import retrieve_data
 from ragatouille import RAGPretrainedModel
 import shutil
 
