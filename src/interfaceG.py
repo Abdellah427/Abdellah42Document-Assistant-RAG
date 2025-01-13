@@ -74,8 +74,9 @@ def display_documents():
         selected_doc = st.selectbox(
             "Select a document to view:",
             options=doc_labels,
-            format_func=lambda x: x[:50] + "..." if len(x) > 50 else x,  
         )
+        selected_doc_index = doc_labels.index(selected_label)
+        selected_doc = st.session_state['docs'][selected_doc_index]
         st.write("Selected Document:")
         st.write(selected_doc)
     else:
