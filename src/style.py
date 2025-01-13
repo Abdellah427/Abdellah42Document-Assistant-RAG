@@ -9,17 +9,26 @@ def apply_styles():
 
     # Title and description with style
     st.markdown("""
-        <h1 style="text-align: center; color: #4CAF50;">RAG Chatbot</h1>
-        <h3 style="text-align: center; color: #888;">Welcome to the RAG Chatbot powered by Mistral AI!</h3>
-        <p style="text-align: center; font-size: 16px; color: #555;">Interact with the AI and get answers powered by the latest Mistral model.</p>
+        <h1 style="text-align: center; color: #007BFF;">RAG Chatbot</h1>
+        <h3 style="text-align: center; color: #555;">Welcome to the Chatbot powered by AI!</h3>
+        <p style="text-align: center; font-size: 16px; color: #777;">Interact with the AI and get insightful answers to your queries.</p>
     """, unsafe_allow_html=True)
 
-    # Add a small description below with your school logo
+    # Add a small description with your school logo below
     st.markdown("""
         <div style="text-align: center; padding: 10px;">
-            <img src="img/logo.png" alt="CY Tech Logo" width="300"/>
+            <img src="img/logo.png" alt="CY Tech Logo" width="250"/>
         </div>
     """, unsafe_allow_html=True)
 
-    # Add a separator line to break content sections
+    # Separator for breaking sections
     st.markdown("<hr>", unsafe_allow_html=True)
+
+    # Additional page layout and styling adjustments
+    st.markdown("""
+        <style>
+            .css-1d391kg { font-family: 'Arial', sans-serif; }
+            .css-1r1ggxg { background-color: #f0f8ff; border-radius: 8px; padding: 10px; margin: 10px; }
+            .css-ffhzg1 { font-size: 16px; }
+        </style>
+    """, unsafe_allow_html=True)
