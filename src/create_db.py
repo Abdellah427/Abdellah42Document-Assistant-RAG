@@ -59,7 +59,6 @@ def create_vector_db_colbertv2(csv_path, db_path):
     file_name_without_ext = os.path.splitext(os.path.basename(csv_path))[0]
     index_name = file_name_without_ext + "_colbertv2"
 
-    return index_name
     
 
     index_path=RAG_Corbert.index(
@@ -68,6 +67,7 @@ def create_vector_db_colbertv2(csv_path, db_path):
         split_documents=True,  
         use_faiss=True,
     )
+    return index_path
 
     # Sauvegarder l'index dans un fichier
 
