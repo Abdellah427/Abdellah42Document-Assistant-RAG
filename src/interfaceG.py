@@ -70,9 +70,10 @@ def display_documents():
 
     if st.session_state.get('docs') :
         st.write("Documents retrieved by the chatbot:")
+        doc_labels = [f"Document {i+1}" for i in range(len(st.session_state['docs']))]
         selected_doc = st.selectbox(
             "Select a document to view:",
-            options=st.session_state['docs'],
+            options=doc_labels,
             format_func=lambda x: x[:50] + "..." if len(x) > 50 else x,  
         )
         st.write("Selected Document:")
