@@ -33,7 +33,7 @@ def csv_to_list_str(csv_path: str) -> list[str]:
     return text_output
 
 
-def create_vector_db_colbertv2(csv_path: str, db_path: str,max_document_length=100) -> str:
+def create_vector_db_colbertv2(csv_path: str, db_path: str,max_document_length=350) -> str:
     """
     Creates a vector database using the ColBERT model from a CSV file.
 
@@ -50,6 +50,7 @@ def create_vector_db_colbertv2(csv_path: str, db_path: str,max_document_length=1
     # Load the model if not already loaded
     RAG_Corbert = RAGPretrainedModel.from_pretrained("colbert-ir/colbertv2.0")
 
+
     # Convert CSV data to a list of strings
     documents = csv_to_list_str(csv_path)
 
@@ -57,12 +58,19 @@ def create_vector_db_colbertv2(csv_path: str, db_path: str,max_document_length=1
     index_path = RAG_Corbert.index(
         collection=documents,
         max_document_length=max_document_length,  # Truncate documents longer than 100 tokens
-        split_documents=False,    # Automatically split documents if too large
-        use_faiss=True,
-                    # Use FAISS for efficient vector search
+        split_documents=True,    # Automatically split documents if too large
+        use_faiss=True,           # Use FAISS for efficient vector search
+        document_splitter_fn=lambda doc: optimized_splitter(doc, max_length=128)
+
     )
 
     return index_path
+
+def optimized_splitter(document: str, max_length: int = 256) -> list[str]:
+    """
+    Split a document into chunks of maximum length max_length.
+    """
+    return [document[i:i + max_length] for i in range(0, len(document), max_length)]
 
 
 def query_vector_db_colbertv2(query_text: str, n_results: int = 5) -> list[dict]:
