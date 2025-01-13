@@ -56,7 +56,7 @@ def main():
     # Téléchargement de fichiers CSV
     uploaded_files = st.file_uploader("Upload CSV files", accept_multiple_files=True, type=["csv"])
 
-    create_db.load_model_colbert()
+    
 
     if st.button("Create Database"):
         if uploaded_files:
@@ -103,4 +103,5 @@ def main():
             st.write("Please upload CSV files.")
 
 if __name__ == "__main__":
+    create_db.load_model_colbert()
     main()
