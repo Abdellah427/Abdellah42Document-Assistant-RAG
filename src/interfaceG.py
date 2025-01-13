@@ -67,6 +67,9 @@ def display_messages():
 
 def display_documents():
     """Display the documents retrieved by the chatbot."""
+    st.write(st.session_state.get('docs'))
+    st.write(st.session_state['user_input'])
+
     if st.session_state.get('docs') and len(st.session_state['user_input']) > 0:
         st.write("Documents retrieved by the chatbot:")
         selected_doc = st.selectbox(
