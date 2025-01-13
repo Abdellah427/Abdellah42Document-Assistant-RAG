@@ -8,8 +8,8 @@ import src.style as style
 
 
 def main():
-    style.apply_styles()
     
+    style.apply_styles()
 
     mistral_key = "5Lf75S6e7HwH2K4FDO2WViZVCTT0XSMH"
     
