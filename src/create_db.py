@@ -13,21 +13,20 @@ def load_model_colbert() -> None:
     RAG_Corbert = RAGPretrainedModel.from_pretrained("colbert-ir/colbertv2.0")
 
 
-def csv_to_list_str(csv_path: str) -> list[str]:
-    """
-    Converts a CSV file to a list of strings where each string represents a row.
-
-    Args:
-        csv_path (str): Path to the CSV file.
-
-    Returns:
-        list[str]: A list of strings representing the rows in the CSV.
-    """
+def csv_to_list_str(csv_path):
+    # Charger le fichier CSV
     df = pd.read_csv(csv_path)
+
+    # Initialiser une liste pour stocker les lignes de texte
     text_output = []
 
-    for _, row in df.iterrows():
-        row_text = [f"{column}: {row[column]}" for column in df.columns]
+    # Parcourir chaque ligne du DataFrame
+    for index, row in df.iterrows():
+        row_text = []
+        for column in df.columns:
+            # Ajouter chaque colonne avec sa valeur dans la forme "colonne: valeur"
+            row_text.append(f"{column}: {row[column]}")
+        # Joindre les colonnes pour créer une chaîne et l'ajouter à la liste
         text_output.append(" ".join(row_text))
 
     return text_output
