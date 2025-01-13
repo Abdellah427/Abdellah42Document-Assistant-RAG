@@ -67,7 +67,6 @@ def display_messages():
 
 def display_documents():
     """Display the documents retrieved by the chatbot."""
-    st.write(st.session_state.get('docs'))
     st.write(st.session_state['user_input'])
 
     if st.session_state.get('docs') and len(st.session_state['user_input']) > 0:
@@ -108,6 +107,6 @@ def handle_file_upload():
             uploaded_file = uploaded_files[0]
             csv_path = os.path.join(csv_folder, uploaded_file.name)
             index_path = create_db.create_vector_db_colbertv2(csv_path, db_path)
-            st.write(f"Database created successfully! Index name: {index_path}")
+            st.write(f"Database created successfully ! ")
         else:
             st.write("Please upload CSV files.")
