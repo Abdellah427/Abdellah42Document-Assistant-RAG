@@ -6,10 +6,8 @@ import os
 import numpy as np
 import uuid
 from src.retrieve_data import retrieve_data
-import ragatouille
 from ragatouille import RAGPretrainedModel
 import shutil
-import torch
 
 
 
@@ -48,6 +46,7 @@ def csv_to_list_str(csv_path):
 
 # Fonction pour créer et sauvegarder l'index vectoriel avec ColBERTv2
 def create_vector_db_colbertv2(csv_path, db_path):
+
     global RAG_Corbert
     # Charger le modèle pré-entraîné ColBERTv2
     if RAG_Corbert is None:
@@ -60,17 +59,16 @@ def create_vector_db_colbertv2(csv_path, db_path):
     index_name = os.path.splitext(os.path.basename(csv_path))[0]+"_colbertv2"
     
 
-    RAG_Corbert.index(
-        collection=liste,  # Utiliser le texte généré à partir du CSV
-        #index_name="testtt",  # Nom de l'index
-        max_document_length=100,  # Limite de longueur des documents
-        split_documents=True,  # Fractionner les documents trop longs
+    index_path=RAG_Corbert.index(
+        collection=liste,  
+        max_document_length=100,  
+        split_documents=True,  
         use_faiss=True,
     )
 
     # Sauvegarder l'index dans un fichier
 
-    fichier_source = '.ragatouille/colbert/indexes/colbertv2.0new_index'
+    fichier_source = index_path
     destination = db_path
 
     # Déplace le fichier vers le nouveau répertoire
