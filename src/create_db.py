@@ -58,7 +58,9 @@ def create_vector_db_colbertv2(csv_path: str, db_path: str,max_document_length=1
         collection=documents,
         max_document_length=max_document_length,  # Truncate documents longer than 100 tokens
         split_documents=False,    # Automatically split documents if too large
-        use_faiss=True           # Use FAISS for efficient vector search
+        use_faiss=True,
+        faiss_config={"nlist": 100, "nprobe": 10},
+        num_workers=4            # Use FAISS for efficient vector search
     )
 
     return index_path
