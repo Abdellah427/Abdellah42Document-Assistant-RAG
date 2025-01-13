@@ -103,5 +103,5 @@ def main():
             st.write("Please upload CSV files.")
 
 if __name__ == "__main__":
-    create_db.load_model_colbert()
+    
     main()

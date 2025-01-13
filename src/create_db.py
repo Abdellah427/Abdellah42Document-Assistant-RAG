@@ -142,7 +142,7 @@ def process_csvs(csv_folder, collection):
                     print(f"Processed row {index + 1} of {len(df)} in file {csv_file}")
 
 if __name__ == "__main__":
-
+    print()
     
     #collection = create_vector_db(db_path)
     #process_csvs(csv_folder, collection)
