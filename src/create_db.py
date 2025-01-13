@@ -47,7 +47,12 @@ def csv_to_list_str(csv_path):
 # Fonction pour créer et sauvegarder l'index vectoriel avec ColBERTv2
 def create_vector_db_colbertv2(csv_path, db_path):
 
-    RAG_Corbert=RAGPretrainedModel.from_pretrained("colbert-ir/colbertv2.0")
+    global RAG_Corbert
+    if RAG_Corbert is None:
+        load_model_colbert()
+
+        
+    
     
     
     # Convertir le CSV en texte long
@@ -55,17 +60,20 @@ def create_vector_db_colbertv2(csv_path, db_path):
 
     index_path=RAG_Corbert.index(
         collection=liste,  
+        index_name="index1"
         max_document_length=100,  
         split_documents=True,  
         use_faiss=True,
     )
+
     return index_path
+    
     # Récupérer le nom du fichier sans l'extension
     file_name_without_ext = os.path.splitext(os.path.basename(csv_path))[0]
     index_name = file_name_without_ext + "_colbertv2"
 
     
-
+    
 
     # Sauvegarder l'index dans un fichier
 
@@ -90,9 +98,10 @@ def query_vector_db_colbertv2(query_text, n_results=5):
     # Charger le modèle pré-entraîné ColBERTv2
     if RAG_Corbert is None:
         load_model_colbert()
+        return "Model loaded successfully1"
 
     # Rechercher les documents les plus similaires
-    results = RAG_Corbert.search(query_text, n_results=n_results)
+    results = RAG_Corbert.search(query_text, k=n_results)
 
     return results
 
