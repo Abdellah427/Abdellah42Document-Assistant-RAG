@@ -44,7 +44,7 @@ def main():
             formatted_response = helpers.format_response(response) # Pour l'instant on ne fait rien
 
             # Ajout de l'entrée de l'utilisateur et de la réponse du chatbot à l'historique
-            st.session_state.history.append(f"You: {processed_input}")
+            st.session_state.history.append(f"You: {user_input}")
             st.session_state.history.append(f"Chatbot: {formatted_response}")
 
             # Réinitialisation de l'entrée utilisateur dans l'état de la session (pour effacer le champ de saisie)
@@ -60,15 +60,20 @@ def main():
     # Affichage des messages
     for message in st.session_state.history:
         st.write(message)
-    if st.button("Show Documents"):
-        if st.session_state['docs']:
-            st.write("Here are the documents used:")
-            for doc in st.session_state['docs']:
-                st.write(doc)
-        else:
-            st.write("No documents have been retrieved yet.")
-        
 
+    if st.session_state.get('docs') and len(st.session_state['user_input']) > 0:
+        st.write("Documents retrieved by the chatbot:")
+        selected_doc = st.selectbox(
+            "Select a document to view:",
+            options=st.session_state['docs'],
+            format_func=lambda x: x[:50] + "..." if len(x) > 50 else x,  # Tronquer les longs documents
+        )
+        st.write("Selected Document:")
+        st.write(selected_doc)
+    else:
+        # Afficher une information s'il n'y a pas encore de documents
+        if len(st.session_state.history) > 0 and "Chatbot:" in st.session_state.history[-1]:
+            st.write("No documents retrieved by the chatbot for this interaction.")
 
     # Téléchargement de fichiers CSV
     uploaded_files = st.file_uploader("Upload CSV files", accept_multiple_files=True, type=["csv"])
