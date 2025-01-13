@@ -1,8 +1,8 @@
 import streamlit as st
 import os
-import create_db as create_db
-import helpers as helpers
-import llm_interface as llm_interface
+import src.create_db as create_db
+import src.helpers as helpers
+import src.llm_interface as llm_interface
 
 def title():
     """
