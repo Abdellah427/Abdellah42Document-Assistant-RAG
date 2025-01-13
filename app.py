@@ -76,7 +76,7 @@ def main():
 
             uploaded_file = uploaded_files[0]
             csv_path = os.path.join(csv_folder, uploaded_file.name)
-            db_path = os.path.join(db_path, uploaded_file.name)
+            
 
             
             # Création de la base de données

@@ -48,9 +48,11 @@ def csv_to_list_str(csv_path):
 def create_vector_db_colbertv2(csv_path, db_path):
 
     global RAG_Corbert
+    
     # Charger le modèle pré-entraîné ColBERTv2
     if RAG_Corbert is None:
         load_model_colbert()
+        
     
     # Convertir le CSV en texte long
     liste = csv_to_list_str(csv_path)
@@ -59,7 +61,7 @@ def create_vector_db_colbertv2(csv_path, db_path):
     file_name_without_ext = os.path.splitext(os.path.basename(csv_path))[0]
     index_name = file_name_without_ext + "_colbertv2"
 
-    return  "db_path: "+db_path +" \n file_name_without_ext :"+file_name_without_ext +"  \n index_name :"+index_name
+    
 
     index_path=RAG_Corbert.index(
         collection=liste,  
@@ -74,10 +76,12 @@ def create_vector_db_colbertv2(csv_path, db_path):
     fichier_source = index_path
     destination_path = db_path+"/"+index_name
 
-    return db_path
+    
 
     if os.path.exists(destination_path) and os.path.isdir(destination_path):
         shutil.rmtree(destination_path)
+
+    return "fichier_source: " + fichier_source + " destination_path: " + destination_path
 
     shutil.move(fichier_source, destination_path)
 
