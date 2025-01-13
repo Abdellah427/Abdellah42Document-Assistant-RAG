@@ -86,21 +86,9 @@ def main():
             
             # Création de la base de données
 
-            #Celle de Romain
-            
-            # collection = create_db.create_vector_db(db_path)
-            # logging.info("Database created successfully!")
-            # create_db.process_csvs(csv_folder, collection)
-            # logging.info("CSV files processed successfully!")
-            
-            # st.write("Database created successfully!")
-            
 
-            #Celle de ColBERTv2
             index_path = create_db.create_vector_db_colbertv2(csv_path,db_path)
-            #st.write(f"Database created successfully! Index name: {index_path}")
-
-            
+            st.write(f"Database created successfully! Index name: {index_path}")
 
             
         else:
