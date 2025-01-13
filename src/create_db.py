@@ -67,12 +67,14 @@ def create_vector_db_colbertv2(csv_path, db_path):
         split_documents=True,  
         use_faiss=True,
     )
-    return index_path
+    
 
     # Sauvegarder l'index dans un fichier
 
     fichier_source = index_path
     destination_path = db_path+"/"+index_name
+
+    return destination_path
 
     if os.path.exists(destination_path) and os.path.isdir(destination_path):
         shutil.rmtree(destination_path)
