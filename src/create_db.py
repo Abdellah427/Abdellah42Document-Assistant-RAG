@@ -74,10 +74,21 @@ def create_vector_db_colbertv2(csv_path, db_path):
     # Déplace le fichier vers le nouveau répertoire
     shutil.move(fichier_source, destination)
 
+    RAG_Corbert=RAGPretrainedModel.from_index(destination, n_gpu=-1, verbose=1)
 
     return index_name
 
 
+def query_vector_db_colbertv2(index_name, query_text, n_results=5):
+    global RAG_Corbert
+    # Charger le modèle pré-entraîné ColBERTv2
+    if RAG_Corbert is None:
+        load_model_colbert()
+
+    # Rechercher les documents les plus similaires
+    results = RAG_Corbert.search(query_text, n_results=n_results)
+
+    return results
 
 # Romain
 
@@ -125,7 +136,7 @@ def process_csvs(csv_folder, collection):
 
 if __name__ == "__main__":
 
-    load_model_Colbert()
+    
 
     #collection = create_vector_db(db_path)
     #process_csvs(csv_folder, collection)

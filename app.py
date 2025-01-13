@@ -93,6 +93,9 @@ def main():
 
             #Celle de ColBERTv2
             index_name = create_db.create_vector_db_colbertv2(csv_path,db_path)
+            st.write(f"Database created successfully! Index name: {index_name}")
+            docs = create_db.query_vector_db_colbertv2(index_name, "What are the names of the American presidents who were victims of assassination?", 3)
+            st.write(docs)
             
 
             
