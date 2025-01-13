@@ -34,7 +34,7 @@ def main():
             docs = create_db.query_vector_db_colbertv2(user_input,2)
             st.session_state['docs'] = docs
             processed_input =  f"Question : \n\n, {user_input} \n\n Here are some documents to answer the question : \n\n {docs}"
-            
+            #st.write(docs)
 
             # Envoi de la requête au model LLM avec l'historique des échanges et la clé API
             response = llm_interface.query_mistral(processed_input, st.session_state.history, api_key)
