@@ -47,21 +47,11 @@ def csv_to_list_str(csv_path):
 # Fonction pour créer et sauvegarder l'index vectoriel avec ColBERTv2
 def create_vector_db_colbertv2(csv_path, db_path):
 
-    global RAG_Corbert
+    RAG_Corbert=RAGPretrainedModel.from_pretrained("colbert-ir/colbertv2.0")
     
-    # Charger le modèle pré-entraîné ColBERTv2
-    if RAG_Corbert is None:
-        load_model_colbert()
-        
     
     # Convertir le CSV en texte long
     liste = csv_to_list_str(csv_path)
-
-    # Récupérer le nom du fichier sans l'extension
-    file_name_without_ext = os.path.splitext(os.path.basename(csv_path))[0]
-    index_name = file_name_without_ext + "_colbertv2"
-
-    
 
     index_path=RAG_Corbert.index(
         collection=liste,  
@@ -69,7 +59,13 @@ def create_vector_db_colbertv2(csv_path, db_path):
         split_documents=True,  
         use_faiss=True,
     )
+    return index_path
+    # Récupérer le nom du fichier sans l'extension
+    file_name_without_ext = os.path.splitext(os.path.basename(csv_path))[0]
+    index_name = file_name_without_ext + "_colbertv2"
+
     
+
 
     # Sauvegarder l'index dans un fichier
 
