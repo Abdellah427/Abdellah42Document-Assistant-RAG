@@ -74,7 +74,7 @@ def create_vector_db_colbertv2(csv_path, db_path):
     destination = db_path
 
     # Déplace le fichier vers le nouveau répertoire
-    shutil.mv(fichier_source, destination)
+    shutil.move(fichier_source, destination)
 
 
     return index_name
