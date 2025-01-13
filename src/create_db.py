@@ -60,17 +60,22 @@ def create_vector_db_colbertv2(csv_path: str, db_path: str,max_document_length=3
         max_document_length=max_document_length,  # Truncate documents longer than 100 tokens
         split_documents=True,    # Automatically split documents if too large
         use_faiss=True,           # Use FAISS for efficient vector search
-        document_splitter_fn=lambda doc: optimized_splitter(doc, chunk_size=max_document_length)
+        document_splitter_fn=lambda doc: optimized_splitter([doc], [str(documents.index(doc))], max_length=max_document_length)
 
     )
 
     return index_path
 
-def optimized_splitter(document: str, max_length: int = 256) -> list[str]:
+def optimized_splitter(documents: list[str], document_ids: list[str], **splitter_kwargs) -> list[str]:
     """
-    Split a document into chunks of maximum length max_length.
+    Split a list of documents into chunks of maximum length specified in splitter_kwargs (max_length).
     """
-    return [document[i:i + max_length] for i in range(0, len(document), max_length)]
+    max_length = splitter_kwargs.get('max_length', 256)  # Default to 256 if not provided
+    result = []
+    for doc in documents:
+        result.extend([doc[i:i + max_length] for i in range(0, len(doc), max_length)])
+    return result
+
 
 
 def query_vector_db_colbertv2(query_text: str, n_results: int = 5) -> list[dict]:
