@@ -60,7 +60,7 @@ def create_vector_db_colbertv2(csv_path, db_path):
 
     index_path=RAG_Corbert.index(
         collection=liste,  
-        index_name="index1"
+        index_name="index1",
         max_document_length=100,  
         split_documents=True,  
         use_faiss=True,
