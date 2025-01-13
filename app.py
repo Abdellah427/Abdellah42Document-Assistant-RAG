@@ -20,11 +20,11 @@ def main():
     # Display the messages
     interfaceG.display_messages()
 
-    # Display documents retrieved
-    interfaceG.display_documents()
-
     # Handle file upload and database creation
     interfaceG.handle_file_upload()
+    
+    # Display documents retrieved
+    interfaceG.display_documents()
 
 if __name__ == "__main__":
     
