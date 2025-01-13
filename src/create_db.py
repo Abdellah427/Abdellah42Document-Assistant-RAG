@@ -70,11 +70,11 @@ def create_vector_db_colbertv2(csv_path, db_path):
 
     # Sauvegarder l'index dans un fichier
 
-    #fichier_source = '.ragatouille/colbert/indexes/'+index_name
-    #destination = db_path
+    fichier_source = '.ragatouille/colbert/indexes/colbertv2.0new_index'
+    destination = db_path
 
     # Déplace le fichier vers le nouveau répertoire
-    #shutil.copy(fichier_source, destination)
+    shutil.mv(fichier_source, destination)
 
 
     return index_name
