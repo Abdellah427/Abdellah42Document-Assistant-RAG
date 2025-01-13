@@ -32,10 +32,11 @@ def main():
             # On cherche les documents les plus similaires à l'entrée utilisateur
             docs = create_db.query_vector_db_colbertv2(user_input, 3)
             processed_input =  f"Question : \n\n, {user_input} \n\n Here are some documents to answer the question : \n\n {docs}"
-            #st.write(docs)
+            
 
             # Envoi de la requête au model LLM avec l'historique des échanges et la clé API
-            response = llm_interface.query_mistral(processed_input, st.session_state.history, api_key) 
+            response = llm_interface.query_mistral(processed_input, st.session_state.history, api_key)
+            st.write(docs) 
 
             # Formatage de la réponse retournée par le LLM
             formatted_response = helpers.format_response(response) # Pour l'instant on ne fait rien
