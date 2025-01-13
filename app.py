@@ -13,7 +13,6 @@ def main():
 
     mistral_key = "5Lf75S6e7HwH2K4FDO2WViZVCTT0XSMH"
     
-    style.apply_styles()
     
     # Initialisation de l'état de session si nécessaire
     if 'user_input' not in st.session_state:
