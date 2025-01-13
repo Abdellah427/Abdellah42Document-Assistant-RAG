@@ -56,7 +56,8 @@ def create_vector_db_colbertv2(csv_path, db_path):
     liste = csv_to_list_str(csv_path)
 
     # Récupérer le nom du fichier sans l'extension
-    index_name = os.path.splitext(os.path.splitext(os.path.basename(csv_path))[0])+"_colbertv2"
+    file_name_without_extension = os.path.splitext(os.path.basename(csv_path))[0]
+    index_name = file_name_without_extension + "_colbertv2"
     
 
     index_path=RAG_Corbert.index(
