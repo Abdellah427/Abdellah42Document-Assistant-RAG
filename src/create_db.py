@@ -59,7 +59,7 @@ def create_vector_db_colbertv2(csv_path, db_path):
     file_name_without_ext = os.path.splitext(os.path.basename(csv_path))[0]
     index_name = file_name_without_ext + "_colbertv2"
 
-    
+    return  "db_path: "+db_path +" \n file_name_without_ext :"+file_name_without_ext +"  \n index_name :"+index_name
 
     index_path=RAG_Corbert.index(
         collection=liste,  
