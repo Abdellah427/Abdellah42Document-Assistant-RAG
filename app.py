@@ -21,6 +21,8 @@ def main():
         st.session_state['user_input'] = ""
     if 'history' not in st.session_state:
         st.session_state['history'] = []
+    if 'docs' not in st.session_state:
+        st.session_state['docs'] = []
 
     # Création d'une fonction pour gérer l'envoi des messages
     def handle_send_message():
@@ -30,19 +32,19 @@ def main():
             processed_input = helpers.preprocess_input(user_input) # Mise en minuscule et suppression des espaces inutiles
 
             # On cherche les documents les plus similaires à l'entrée utilisateur
-            docs = create_db.query_vector_db_colbertv2(user_input, 3)
+            docs = create_db.query_vector_db_colbertv2(user_input,2)
+            st.session_state['docs'] = docs
             processed_input =  f"Question : \n\n, {user_input} \n\n Here are some documents to answer the question : \n\n {docs}"
             
 
             # Envoi de la requête au model LLM avec l'historique des échanges et la clé API
             response = llm_interface.query_mistral(processed_input, st.session_state.history, api_key)
-            st.write(docs) 
 
             # Formatage de la réponse retournée par le LLM
             formatted_response = helpers.format_response(response) # Pour l'instant on ne fait rien
 
             # Ajout de l'entrée de l'utilisateur et de la réponse du chatbot à l'historique
-            st.session_state.history.append(f"You: {user_input}")
+            st.session_state.history.append(f"You: {processed_input}")
             st.session_state.history.append(f"Chatbot: {formatted_response}")
 
             # Réinitialisation de l'entrée utilisateur dans l'état de la session (pour effacer le champ de saisie)
@@ -51,12 +53,21 @@ def main():
 
     # Champ de saisie pour les messages avec action sur Entrée
     st.text_input("You: ", value="", key="user_input", on_change=handle_send_message)
+    
 
 
 
     # Affichage des messages
     for message in st.session_state.history:
         st.write(message)
+    if st.button("Show Documents"):
+        if st.session_state['docs']:
+            st.write("Here are the documents used:")
+            for doc in st.session_state['docs']:
+                st.write(doc)
+        else:
+            st.write("No documents have been retrieved yet.")
+        
 
 
     # Téléchargement de fichiers CSV
