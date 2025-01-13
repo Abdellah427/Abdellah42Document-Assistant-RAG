@@ -54,10 +54,11 @@ def handle_send_message(mistral_key):
 
         # Update history with user input and chatbot response
         st.session_state.history.append(f"You: {user_input}")
-        st.session_state.history.append(f"Chatbot: {formatted_response}")
+        st.session_state.history.append(f"Chatbot: \n\n{formatted_response}")
 
         # Clear user input field after sending
-        st.session_state.user_input = ""  # Clear input after sending
+        st.session_state.user_input = "" 
+        return docs
 
 def display_messages():
     """Display messages from the history in the interface."""
@@ -71,7 +72,7 @@ def display_documents():
         selected_doc = st.selectbox(
             "Select a document to view:",
             options=st.session_state['docs'],
-            format_func=lambda x: x[:50] + "..." if len(x) > 50 else x,  # Truncate long documents
+            format_func=lambda x: x[:50] + "..." if len(x) > 50 else x,  
         )
         st.write("Selected Document:")
         st.write(selected_doc)
