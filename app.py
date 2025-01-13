@@ -21,8 +21,7 @@ def main():
         st.session_state['user_input'] = ""
     if 'history' not in st.session_state:
         st.session_state['history'] = []
-    if 'docs' not in st.session_state:
-        st.session_state['docs'] = []
+    
 
     # Création d'une fonction pour gérer l'envoi des messages
     def handle_send_message():
