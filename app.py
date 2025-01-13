@@ -29,7 +29,10 @@ def main():
             # Prétraitement de l'entrée utilisateur 
             processed_input = helpers.preprocess_input(user_input) # Mise en minuscule et suppression des espaces inutiles
 
-            # ICI ON DOIT APPELER LA FONCTION les fonction qui ajoute les embeldings les plus proches à response
+            # On cherche les documents les plus similaires à l'entrée utilisateur
+            docs = create_db.query_vector_db_colbertv2(user_input, 3)
+            processed_input =  f"Question : \n\n, {user_input} \n\n Here are some documents to answer the question : \n\n {docs}"
+            #st.write(docs)
 
             # Envoi de la requête au model LLM avec l'historique des échanges et la clé API
             response = llm_interface.query_mistral(processed_input, st.session_state.history, api_key) 
@@ -47,6 +50,8 @@ def main():
 
     # Champ de saisie pour les messages avec action sur Entrée
     st.text_input("You: ", value="", key="user_input", on_change=handle_send_message)
+
+
 
     # Affichage des messages
     for message in st.session_state.history:
@@ -93,9 +98,8 @@ def main():
 
             #Celle de ColBERTv2
             index_path = create_db.create_vector_db_colbertv2(csv_path,db_path)
-            st.write(f"Database created successfully! Index name: {index_path}")
-            docs = create_db.query_vector_db_colbertv2("What are the names of the American presidents who were victims of assassination?", 3)
-            st.write(docs)
+            #st.write(f"Database created successfully! Index name: {index_path}")
+
             
 
             
