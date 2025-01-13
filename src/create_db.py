@@ -47,8 +47,9 @@ def create_vector_db_colbertv2(csv_path: str, db_path: str,max_document_length=1
     """
     global RAG_Corbert
 
-    RAG_Corbert = RAGPretrainedModel.from_pretrained("colbert-ir/colbertv2.0")
-
+    # Load the model if not already loaded
+    if RAG_Corbert is None:
+        load_model_colbert()
 
     # Convert CSV data to a list of strings
     documents = csv_to_list_str(csv_path)
