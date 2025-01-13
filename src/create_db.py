@@ -66,7 +66,7 @@ def create_vector_db_colbertv2(csv_path, db_path):
         max_document_length=100,  # Limite de longueur des documents
         split_documents=True,  # Fractionner les documents trop longs
         use_faiss=True,
-        overwrite=True,  # Écraser l'index s'il existe déjà
+        overwrite_index=True,  # Écraser l'index s'il existe déjà
     )
 
     # Sauvegarder l'index dans un fichier
