@@ -1,6 +1,8 @@
 import streamlit as st
 import os
 import logging
+import faiss
+import pandas as pd
 
 import src.rerank as rerank
 import src.create_db as create_db
@@ -12,6 +14,7 @@ def main():
     st.write("Welcome to the RAG Chatbot powered by Mistral AI !")
     api_key = "5Lf75S6e7HwH2K4FDO2WViZVCTT0XSMH"
 
+
     # Initialisation de l'état de session si nécessaire
     if 'user_input' not in st.session_state:
         st.session_state['user_input'] = ""
@@ -20,42 +23,9 @@ def main():
 
     
 
-    
-
-
     # Création d'une fonction pour gérer l'envoi des messages
     def handle_send_message():
         user_input = st.session_state.user_input
-
-        # client, model = rerank.load_mistral()
-        # # Chargement ou création des embeddings et de l'index FAISS au début
-        # if 'embeddings' not in st.session_state:
-            
-        #     df = rerank.load_data("uploaded_dataset/wiki_movie_plots_deduped.csv").head(5000)
-        #     embedding_model = rerank.load_embedding_model()
-        #     embeddings = rerank.get_embeddings(df, embedding_model)
-        #     index, pca = rerank.load_faiss(embeddings)
-            
-        #     # Stockage des résultats dans st.session_state
-        #     st.session_state['embeddings'] = embeddings
-        #     st.session_state['index'] = index
-        #     st.session_state['pca'] = pca
-        #     st.session_state['df'] = df
-        #     st.session_state['embedding_model'] = embedding_model
-        # else:
-        #     # Chargement des résultats depuis st.session_state
-        #     embeddings = st.session_state['embeddings']
-        #     index = st.session_state['index']
-        #     pca = st.session_state['pca']
-        #     df = st.session_state['df']
-        #     embedding_model = st.session_state['embedding_model']
-
-        # if user_input:
-        #     # Prétraitement de l'entrée utilisateur 
-        #     processed_input = helpers.preprocess_input(user_input) # Mise en minuscule et suppression des espaces inutiles
-        #     results= rerank.search_and_rerank(pca, client, embedding_model, processed_input, index, df['Plot'].tolist())
-        #     response = rerank.generate_final_response(client, processed_input, results)
-        #     # Formatage de la réponse retournée par le LLM
 
         response = Simon(user_input)
 
@@ -98,27 +68,7 @@ def main():
             db_path = os.path.join(db_path, uploaded_file.name)
             # Création de la base de données
 
-            #Celle de Romain
-            
-            # collection = create_db.create_vector_db(db_path)
-            # logging.info("Database created successfully!")
-            # create_db.process_csvs(csv_folder, collection)
-            # logging.info("CSV files processed successfully!")
-            
-            # st.write("Database created successfully!")
-            
-
-            #Celle de ColBERTv2
-            # index_name = create_db.create_vector_db_colbertv2(csv_path,db_path)
-            
-
-
-            ## mistral
-
-            # client, model = llm_interface.load_mistral()
-            # texts = create_db.csv_to_long_text("uploaded_dataset/wiki_movie_plots_deduped.csv")
-            # # embeddings = rerank.get_embeddings_by_chunks(texts, client, model)
-            # embeddings = create_db.get_and_save_embeddings_to_chroma(texts, client,"./database")
+        
 
             
         else:
@@ -132,31 +82,44 @@ if __name__ == "__main__":
 
 def Simon(user_input):
     client, model = rerank.load_mistral()
+    df = load_data("uploaded_dataset/wiki_movie_plots_deduped.csv").head(5000)
+    
     # Chargement ou création des embeddings et de l'index FAISS au début
-    if 'embeddings' not in st.session_state:
+    if 'first_connexion' not in st.session_state:
         
-        df = rerank.load_data("uploaded_dataset/wiki_movie_plots_deduped.csv").head(5000)
-        embedding_model = rerank.load_embedding_model()
-        embeddings = rerank.get_embeddings(df, embedding_model)
-        index, pca = rerank.load_faiss(embeddings)
+        index, pca = rerank.create_vector_db_all_MiniLM_L6("uploaded_dataset/wiki_movie_plots_deduped.csv")
+        # df = rerank.load_data("uploaded_dataset/wiki_movie_plots_deduped.csv").head(5000)
+        # embedding_model = rerank.load_embedding_model()
+        # embeddings = rerank.get_embeddings(df, embedding_model)
+        # index, pca = rerank.load_faiss(embeddings)
         
         # Stockage des résultats dans st.session_state
-        st.session_state['embeddings'] = embeddings
-        st.session_state['index'] = index
-        st.session_state['pca'] = pca
-        st.session_state['df'] = df
-        st.session_state['embedding_model'] = embedding_model
+        st.session_state['first_connexion'] = False
+        # st.session_state['index'] = index
+        # st.session_state['pca'] = pca
+        # st.session_state['df'] = df
+        # st.session_state['embedding_model'] = embedding_model
+
     else:
         # Chargement des résultats depuis st.session_state
-        embeddings = st.session_state['embeddings']
-        index = st.session_state['index']
-        pca = st.session_state['pca']
-        df = st.session_state['df']
-        embedding_model = st.session_state['embedding_model']
+        # embeddings = st.session_state['embeddings']
+        # index = st.session_state['index']
+        # pca = st.session_state['pca']
+        # df = st.session_state['df']
+        # embedding_model = st.session_state['embedding_model']
+        pca = faiss.read_VectorTransform("pca_file")
+        index = faiss.read_index("faiss_index_file")
+
 
     if user_input:
         # Prétraitement de l'entrée utilisateur 
         processed_input = helpers.preprocess_input(user_input) # Mise en minuscule et suppression des espaces inutiles
-        results= rerank.search_and_rerank(pca, client, embedding_model, processed_input, index, df['Plot'].tolist())
+        results= rerank.search_and_rerank(pca, client, processed_input, index, df['Plot'].tolist())
         response = rerank.generate_final_response(client, processed_input, results)
         return response
+
+
+
+@st.cache_data
+def load_data(file_path):
+    return pd.read_csv(file_path)
