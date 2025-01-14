@@ -2,6 +2,7 @@ import pandas as pd
 from ragatouille import RAGPretrainedModel
 
 import faiss
+import logging
 from sentence_transformers import SentenceTransformer
 from langchain.schema import Document
 from typing import List
@@ -117,6 +118,7 @@ def create_vector_db_all_MiniLM_L6(csv_path: str) -> None:
     embeddings = []
     for i, plot in enumerate(df['Plot'].tolist()):
         embeddings.append(embedding_model.encode([plot])[0])
+        
         if i % 100 == 0 or i == len(df['Plot']) - 1:
             logging.info(f"Processed {i + 1}/{len(df['Plot'])} plots")
     embeddings = np.array(embeddings)
