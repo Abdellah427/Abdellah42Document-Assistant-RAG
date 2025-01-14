@@ -164,7 +164,7 @@ def handle_file_upload():
             csv_path = os.path.join(csv_folder, uploaded_file.name)
             # Create the database based on the selected RAG method
             if st.session_state.rag_method == "Classic":
-                create_db.create_vector_db_all_MiniLM_L6(csv_path)
+                create_db.create_vector_db_all_MiniLM_L6(os.path.join(csv_folder, "wiki_movie_plots_deduped_5000.csv"))
                 st.success(f"Database created with Classic successfully!")
             elif st.session_state.rag_method == "ColBERTv2":
                 create_db.create_vector_db_colbertv2(csv_path)
