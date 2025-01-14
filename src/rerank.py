@@ -103,19 +103,48 @@ def load_faiss(embeddings):
 #         index.add(reduced_embeddings)
 #         return index, pca
 
+# def rerank_results(client, query, results, texts, model="mistral-large-latest"):
+#     ranked_results = []
+#     for idx in results:
+#         text = texts[idx]
+#         prompt = f"Query: {query}\nDocument: {text}\nRelevance (1-10):"
+#         response = client.chat.complete(model=model, messages=[{"role": "user", "content": prompt}], max_tokens=300 )
+#         score = int(re.findall(r'\d+', response.choices[0].message.content.strip())[0])
+#         ranked_results.append((idx, score))
+
+#     # Trier par pertinence décroissante
+#     ranked_results.sort(key=lambda x: x[1], reverse=True)
+#     return [r[0] for r in ranked_results]
+
 def rerank_results(client, query, results, texts, model="mistral-large-latest"):
+    prompts = [
+        f"Query: {query}\nDocument: {texts[idx]}\nRelevance (1-10):"
+        for idx in results
+    ]
+    responses = client.chat.complete(
+        model=model,
+        messages=[{"role": "user", "content": prompt} for prompt in prompts]
+    )
+
     ranked_results = []
-    for idx in results:
-        text = texts[idx]
-        prompt = f"Query: {query}\nDocument: {text}\nRelevance (1-10):"
-        response = client.chat.complete(model=model, messages=[{"role": "user", "content": prompt}], max_tokens=300 )
-        score = int(re.findall(r'\d+', response.choices[0].message.content.strip())[0])
+    for idx, response in zip(results, responses.choices):
+        score = int(re.findall(r'\d+', response.message.content.strip())[0])
         ranked_results.append((idx, score))
 
-    # Trier par pertinence décroissante
     ranked_results.sort(key=lambda x: x[1], reverse=True)
     return [r[0] for r in ranked_results]
 
+
+import asyncio
+
+# async def rerank_async(client, query, texts, model="mistral-large-latest"):
+#     tasks = []
+#     for text in texts:
+#         prompt = f"Query: {query}\nDocument: {text}\nRelevance (1-10):"
+#         tasks.append(client.chat.complete(model=model, messages=[{"role": "user", "content": prompt}]))
+#     responses = await asyncio.gather(*tasks)
+#     scores = [int(re.findall(r'\d+', res.choices[0].message.content.strip())[0]) for res in responses]
+#     return scores
 
 def search_and_rerank(pca,client, embedding_model, query, index, texts, top_k=3):
     # Recherche initiale
