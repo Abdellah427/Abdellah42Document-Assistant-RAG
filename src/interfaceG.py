@@ -97,6 +97,12 @@ def display_documents():
 
 def handle_file_upload():
     """Handle the uploading of CSV files and the creation of the database."""
+
+    # Select RAG Method
+    st.session_state.rag_method = st.radio(
+        "Select a Retrieval-Augmented Generation (RAG) method:",
+        ["Classique", "ColBERTv2", "Simon"]
+    )
     uploaded_files = st.file_uploader("Upload CSV files", accept_multiple_files=True, type=["csv"])
 
     if st.button("Create Database"):
