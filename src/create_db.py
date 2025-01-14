@@ -128,8 +128,8 @@ def create_vector_db_all_MiniLM_L6(csv_path: str) -> None:
         Document(page_content=plot, metadata={'Title': title, 'Release Year': year, 'Genre': genre})
         for plot, title, year, genre in zip(df['Plot'], df['Title'], df['Release Year'], df['Genre'])
     ]
-    retriever = CustomVectorRetriever(embedding_function=lambda texts: embedding_model.encode(texts), index=index, documents=documents)
-
+    retriever = CustomVectorRetriever(embedding_function=embedding_model.encode, index=index, documents=documents)
+    
     st.session_state.retriever = retriever
     st.write("Embeddings created successfully!")
 
