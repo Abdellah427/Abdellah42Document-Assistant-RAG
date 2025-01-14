@@ -13,10 +13,6 @@ def title():
     """
     # Set up a nice title and header
 
-    st.markdown(f"""
-    <link rel="stylesheet" href="path_to_your_css_file.css?{int(time.time())}">
-    """, unsafe_allow_html=True)
-
     st.set_page_config(page_title="RAG Chatbot", page_icon="🤖", layout="centered")
 
     # Title and description with style
@@ -26,15 +22,6 @@ def title():
         <p style="text-align: center; font-size: 16px; color: #777;">Interact with the AI and get insightful answers to your queries</p>
     """, unsafe_allow_html=True)
 
-    # Additional page layout and styling adjustments
-    st.markdown("""
-        <style>
-            .css-1d391kg { font-family: 'Arial', sans-serif; }
-            .css-1r1ggxg { background-color: #f0f8ff; border-radius: 8px; padding: 10px; margin: 10px; }
-            .css-ffhzg1 { font-size: 16px; }
-        </style>
-    """, unsafe_allow_html=True)
-import streamlit as st
 
 def create_box_choices(rag_methods, selected_method):
     """Function to create custom styled buttons for RAG methods."""
