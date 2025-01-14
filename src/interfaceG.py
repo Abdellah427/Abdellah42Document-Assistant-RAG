@@ -27,6 +27,78 @@ def title():
         </style>
     """, unsafe_allow_html=True)
 
+def create_box_choices(rag_methods, selected_method):
+    """Function to create custom styled buttons for RAG methods."""
+    
+    st.markdown("""
+        <style>
+            
+            .custom-radio-button {
+                display: inline-block;
+                background-color: #f0f8ff;
+                border: 2px solid #007BFF;
+                border-radius: 25px;
+                padding: 10px 20px;
+                margin: 5px;
+                cursor: pointer;
+                font-size: 16px;
+                text-align: center;
+                color: #007BFF;
+                transition: background-color 0.3s, color 0.3s;
+            }
+
+            /* Apparence quand le bouton est sélectionné */
+            .custom-radio-button.selected {
+                background-color: #007BFF;
+                color: white;
+            }
+
+            /* Aligner les boutons sur une ligne et les centrer */
+            .radio-container {
+                display: flex;
+                justify-content: center;
+                gap: 20px;
+                margin: 10px 0;
+            }
+        </style>
+    """, unsafe_allow_html=True)
+
+    st.markdown('<div class="radio-container">', unsafe_allow_html=True)
+
+    for method in rag_methods:
+        if selected_method == method:
+            st.markdown(f'''
+                <div class="custom-radio-button selected" onclick="selectMethod('{method}')">
+                    {method}
+                </div>
+            ''', unsafe_allow_html=True)
+        else:
+            st.markdown(f'''
+                <div class="custom-radio-button" onclick="selectMethod('{method}')">
+                    {method}
+                </div>
+            ''', unsafe_allow_html=True)
+
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    # JavaScript 
+    st.markdown("""
+        <script>
+            function selectMethod(method) {
+                const buttons = document.querySelectorAll('.custom-radio-button');
+                buttons.forEach(button => {
+                    button.classList.remove('selected');
+                });
+                const selectedButton = document.querySelector(`.custom-radio-button:contains('${method}')`);
+                selectedButton.classList.add('selected');
+
+                window.parent.postMessage({ 'rag_method': method }, "*");
+            }
+        </script>
+    """, unsafe_allow_html=True)
+
+
+
 def initialize_session_state():
     """Initialize session state if necessary."""
     if 'user_input' not in st.session_state:
@@ -98,25 +170,27 @@ def display_documents():
 def handle_file_upload():
     """Handle the uploading of CSV files and the creation of the database."""
 
+    uploaded_files = st.file_uploader("Upload CSV files", accept_multiple_files=True, type=["csv"])
+
     if 'rag_method_locked' not in st.session_state:
         st.session_state['rag_method_locked'] = False
 
-    # Activer ou désactiver le choix de méthode en fonction de l'état
     if not st.session_state['rag_method_locked']:
-        st.session_state.rag_method = st.radio(
-            "Select a Retrieval-Augmented Generation (RAG) method:",
-            ["Classic", "ColBERTv2", "Simon"],
-            key="rag_method_selection"
-        )
+
+        rag_methods = ["Classic", "ColBERTv2", "Simon"]
+
+        create_box_choices(rag_methods, st.session_state.rag_method)
+
     else:
         st.write(f"RAG Method selected: **{st.session_state.rag_method}** (locked)")
 
-    uploaded_files = st.file_uploader("Upload CSV files", accept_multiple_files=True, type=["csv"])
 
     if st.button("Create Database"):
         if uploaded_files:
             csv_paths = []
             csv_folder = "uploaded_dataset"
+
+            st.session_state['rag_method_locked'] = True
             os.makedirs(csv_folder, exist_ok=True)
 
             db_path = "database"
@@ -133,17 +207,16 @@ def handle_file_upload():
             csv_path = os.path.join(csv_folder, uploaded_file.name)
             # Create the database based on the selected RAG method
             if st.session_state.rag_method == "Classic":
-                index_path = create_db.create_vector_db_colbertv2(csv_path, db_path)
-                st.write(f"Database created with Classic successfully ! ")
+                create_db.create_vector_db_colbertv2(csv_path, db_path)
+                st.success(f"Database created with Classic successfully!")
             elif st.session_state.rag_method == "ColBERTv2":
-                index_path = create_db.create_vector_db_colbertv2(csv_path, db_path)
-                st.write(f"Database created with ColBERTv2 successfully ! ")
+                create_db.create_vector_db_colbertv2(csv_path, db_path)
+                st.success(f"Database created with ColBERTv2 successfully!")
             elif st.session_state.rag_method == "Simon":
-                index_path = create_db.create_vector_db_colbertv2(csv_path, db_path)
-                st.write(f"Database created with Simon successfully ! ")
-            else:
-                st.write("Invalid RAG method selected.")
-
-            
+                create_db.create_vector_db_colbertv2(csv_path, db_path)
+                st.success(f"Database created with Simon successfully!")
         else:
-            st.write("Please upload CSV files.")
+            st.warning("Please upload CSV files.")
+
+    elif st.session_state['rag_method_locked']:
+        st.info("Database creation already in progress or completed. Reload the app to reset.")
