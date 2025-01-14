@@ -36,7 +36,7 @@ def create_box_choices(rag_methods, selected_method):
         <style>
             .custom-radio-button {
                 display: inline-block;
-                background-color: #f0f8ff;
+                background-color: white;
                 border: 2px solid #007BFF;
                 border-radius: 25px;
                 padding: 10px 20px;
