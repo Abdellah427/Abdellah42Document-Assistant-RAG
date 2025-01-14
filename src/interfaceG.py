@@ -130,10 +130,10 @@ def handle_file_upload():
                 """
                 st.markdown(button_style, unsafe_allow_html=True)
                 
-                if st.button(method, key=method, help=f"Click to select {method}", use_container_width=True):
+                if st.button(method, key=method, use_container_width=True):
                     selected_rag_method = method
                     st.session_state.rag_method = selected_rag_method
-                    st.write(f"RAG Method selected: **{st.session_state.rag_method}**")
+                    #st.write(f"RAG Method selected: **{st.session_state.rag_method}**")
 
     else:
         st.write(f"RAG Method selected: **{st.session_state.rag_method}** (locked)")
