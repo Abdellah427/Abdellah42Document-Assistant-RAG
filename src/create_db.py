@@ -66,12 +66,13 @@ def create_vector_db_colbertv2(csv_path: str, db_path: str,max_document_length=3
 
     return index_path
 
-def document_splitterr(documents: list[str], document_ids: list[str], max_length: int) -> list[str]:
-        result = []
-        for doc in documents:
-            # Split the document into chunks of max_length
-            result.extend([doc[i:i + max_length] for i in range(0, len(doc), max_length)])
-        return result
+def document_splitterr(documents: list[str], document_ids: list[str], chunk_size: int) -> list[str]:
+    result = []
+    for doc in documents:
+        # Split the document into chunks of chunk_size
+        result.extend([doc[i:i + chunk_size] for i in range(0, len(doc), chunk_size)])
+    return result
+
 
 
 def query_vector_db_colbertv2(query_text: str, n_results: int = 5) -> list[dict]:
