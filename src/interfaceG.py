@@ -26,13 +26,14 @@ def title():
             .css-ffhzg1 { font-size: 16px; }
         </style>
     """, unsafe_allow_html=True)
+import streamlit as st
 
 def create_box_choices(rag_methods, selected_method):
     """Function to create custom styled buttons for RAG methods."""
     
+    # Style pour les boutons
     st.markdown("""
         <style>
-            
             .custom-radio-button {
                 display: inline-block;
                 background-color: #f0f8ff;
@@ -47,41 +48,42 @@ def create_box_choices(rag_methods, selected_method):
                 transition: background-color 0.3s, color 0.3s;
             }
 
-            /* Apparence quand le bouton est sélectionné */
             .custom-radio-button.selected {
                 background-color: #007BFF;
                 color: white;
             }
 
-            /* Aligner les boutons sur une ligne et les centrer */
             .radio-container {
                 display: flex;
                 justify-content: center;
+                align-items: center;
                 gap: 20px;
                 margin: 10px 0;
             }
         </style>
     """, unsafe_allow_html=True)
 
+    # Créer un conteneur flex pour les boutons
     st.markdown('<div class="radio-container">', unsafe_allow_html=True)
 
+    # Créer les boutons avec le texte approprié
     for method in rag_methods:
         if selected_method == method:
             st.markdown(f'''
-                <div class="custom-radio-button selected" onclick="selectMethod('{method}')">
+                <div class="custom-radio-button selected" data-method="{method}" onclick="selectMethod('{method}')">
                     {method}
                 </div>
             ''', unsafe_allow_html=True)
         else:
             st.markdown(f'''
-                <div class="custom-radio-button" onclick="selectMethod('{method}')">
+                <div class="custom-radio-button" data-method="{method}" onclick="selectMethod('{method}')">
                     {method}
                 </div>
             ''', unsafe_allow_html=True)
 
     st.markdown('</div>', unsafe_allow_html=True)
 
-    # JavaScript 
+    # Ajouter le script JavaScript pour gérer la sélection des boutons
     st.markdown("""
         <script>
             function selectMethod(method) {
@@ -89,15 +91,16 @@ def create_box_choices(rag_methods, selected_method):
                 buttons.forEach(button => {
                     button.classList.remove('selected');
                 });
-                const selectedButton = document.querySelector(`.custom-radio-button:contains('${method}')`);
+
+                // Trouver le bouton cliqué et le marquer comme sélectionné
+                const selectedButton = Array.from(buttons).find(button => button.dataset.method === method);
                 selectedButton.classList.add('selected');
 
+                // Mettre à jour la méthode RAG dans Streamlit en utilisant Session State
                 window.parent.postMessage({ 'rag_method': method }, "*");
             }
         </script>
     """, unsafe_allow_html=True)
-
-
 
 def initialize_session_state():
     """Initialize session state if necessary."""
