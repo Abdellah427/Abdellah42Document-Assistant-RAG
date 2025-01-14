@@ -81,6 +81,7 @@ def create_box_choices(rag_methods, selected_method):
     
     return selected_method
 
+
 def initialize_session_state():
     """Initialize session state if necessary."""
     if 'user_input' not in st.session_state:
