@@ -27,7 +27,7 @@ def initialize_session_state():
     if 'history' not in st.session_state:
         st.session_state['history'] = []
     if 'rag_method' not in st.session_state:
-        st.session_state['rag_method'] = "Classic" 
+        st.session_state['rag_method'] = "MiniLM_L6" 
 
 
 def handle_send_message(mistral_key):
@@ -38,7 +38,7 @@ def handle_send_message(mistral_key):
         processed_input = helpers.preprocess_input(user_input)
 
         # Query the most similar documents to the user input
-        if st.session_state.rag_method == "Classic":
+        if st.session_state.rag_method == "MiniLM_L6":
             docs = create_db.query_vector_db_CustomVectorRetriever(user_input, 5) 
         elif st.session_state.rag_method == "ColBERTv2":
             docs = create_db.query_vector_db_colbertv2(user_input, 2)
@@ -98,7 +98,7 @@ def handle_file_upload():
 
     if not st.session_state['rag_method_locked']:
         # Create buttons for selecting RAG method
-        rag_methods = ["Classic", "ColBERTv2", "Simon"]
+        rag_methods = ["MiniLM_L6", "ColBERTv2", "Simon"]
         selected_rag_method = None
 
         # Create columns and display buttons
@@ -106,7 +106,7 @@ def handle_file_upload():
         
     if not st.session_state['rag_method_locked']:
         # Create columns for displaying buttons horizontally and center them
-        rag_methods = ["Classic", "ColBERTv2", "Simon"]
+        rag_methods = ["MiniLM_L6", "ColBERTv2", "Simon"]
         selected_rag_method = st.session_state.get('rag_method', None)
 
         # Create empty columns and align them to the center
@@ -130,7 +130,7 @@ def handle_file_upload():
                 """
                 st.markdown(button_style, unsafe_allow_html=True)
                 
-                if st.button(method, key=method, help=f"Click to select {method}", use_container_width=True):
+                if st.button(method, key=method, use_container_width=True):
                     selected_rag_method = method
                     st.session_state.rag_method = selected_rag_method
                     st.session_state['rag_method_locked'] = True  # Lock the selection
@@ -163,9 +163,9 @@ def handle_file_upload():
             uploaded_file = uploaded_files[0]
             csv_path = os.path.join(csv_folder, uploaded_file.name)
             # Create the database based on the selected RAG method
-            if st.session_state.rag_method == "Classic":
-                create_db.create_vector_db_all_MiniLM_L6(os.path.join(csv_folder, "wiki_movie_plots_deduped_5000.csv"))
-                st.success(f"Database created with Classic successfully!")
+            if st.session_state.rag_method == "MiniLM_L6":
+                create_db.create_vector_db_all_MiniLM_L6(csv_path)
+                st.success(f"Database created with MiniLM_L6 successfully!")
             elif st.session_state.rag_method == "ColBERTv2":
                 create_db.create_vector_db_colbertv2(csv_path)
                 st.success(f"Database created with ColBERTv2 successfully!")
