@@ -109,18 +109,31 @@ def handle_file_upload():
         rag_methods = ["Classic", "ColBERTv2", "Simon"]
         selected_rag_method = None
 
-        # Create empty columns and align them to the center
+ # Create empty columns and align them to the center
         cols = st.columns(len(rag_methods))
-        
+
+        # Loop through rag methods and create buttons
         for i, method in enumerate(rag_methods):
             with cols[i]:
-                # Center the button by wrapping it in an empty container
-                button_container = st.empty()
-                with button_container:
-                    if st.button(method):
-                        selected_rag_method = method
-                        st.session_state.rag_method = selected_rag_method
-                        st.write(f"RAG Method selected: **{st.session_state.rag_method}**")
+                # Check if the button is selected, then highlight it
+                is_selected = (method == st.session_state.get('rag_method', ''))
+                
+                # Add custom CSS to highlight the selected button
+                button_style = f"""
+                <style>
+                    .highlighted-button {{
+                        background-color: {'#4CAF50' if is_selected else 'transparent'};
+                        color: {'white' if is_selected else 'black'};
+                        border: 2px solid {'#4CAF50' if is_selected else '#ccc'};
+                    }}
+                </style>
+                """
+                st.markdown(button_style, unsafe_allow_html=True)
+                
+                if st.button(method, key=method, help=f"Click to select {method}", use_container_width=True):
+                    selected_rag_method = method
+                    st.session_state.rag_method = selected_rag_method
+                    st.write(f"RAG Method selected: **{st.session_state.rag_method}**")
 
     else:
         st.write(f"RAG Method selected: **{st.session_state.rag_method}** (locked)")
