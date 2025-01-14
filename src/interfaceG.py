@@ -104,12 +104,23 @@ def handle_file_upload():
         # Create columns and display buttons
         cols = st.columns(len(rag_methods))
         
+    if not st.session_state['rag_method_locked']:
+        # Create columns for displaying buttons horizontally and center them
+        rag_methods = ["Classic", "ColBERTv2", "Simon"]
+        selected_rag_method = None
+
+        # Create empty columns and align them to the center
+        cols = st.columns(len(rag_methods))
+        
         for i, method in enumerate(rag_methods):
             with cols[i]:
-                if st.button(method):
-                    selected_rag_method = method
-                    st.session_state.rag_method = selected_rag_method
-                    st.write(f"RAG Method selected: **{st.session_state.rag_method}**")
+                # Center the button by wrapping it in an empty container
+                button_container = st.empty()
+                with button_container:
+                    if st.button(method):
+                        selected_rag_method = method
+                        st.session_state.rag_method = selected_rag_method
+                        st.write(f"RAG Method selected: **{st.session_state.rag_method}**")
 
     else:
         st.write(f"RAG Method selected: **{st.session_state.rag_method}** (locked)")
