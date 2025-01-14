@@ -98,11 +98,19 @@ def display_documents():
 def handle_file_upload():
     """Handle the uploading of CSV files and the creation of the database."""
 
-    # Select RAG Method
-    st.session_state.rag_method = st.radio(
-        "Select a Retrieval-Augmented Generation (RAG) method:",
-        ["Classique", "ColBERTv2", "Simon"]
-    )
+    if 'rag_method_locked' not in st.session_state:
+        st.session_state['rag_method_locked'] = False
+
+    # Activer ou désactiver le choix de méthode en fonction de l'état
+    if not st.session_state['rag_method_locked']:
+        st.session_state.rag_method = st.radio(
+            "Select a Retrieval-Augmented Generation (RAG) method:",
+            ["Classic", "ColBERTv2", "Simon"],
+            key="rag_method_selection"
+        )
+    else:
+        st.write(f"RAG Method selected: **{st.session_state.rag_method}** (locked)")
+
     uploaded_files = st.file_uploader("Upload CSV files", accept_multiple_files=True, type=["csv"])
 
     if st.button("Create Database"):
