@@ -75,17 +75,17 @@ def get_embeddings(df,embedding_model):
     return embeddings
 
 
-# def load_faiss(embeddings):
-#     # Réduction de la dimensionnalité avec PCA pour accélérer les recherches
-#     dimension = 128  # Réduire la dimension des embeddings
-#     pca = faiss.PCAMatrix(embeddings.shape[1], dimension)
-#     pca.train(embeddings)
-#     reduced_embeddings = pca.apply_py(embeddings)
-#     index = faiss.IndexFlatIP(dimension)  # Produit scalaire pour la similarité cosine
-#     index = faiss.IndexIVFFlat(index, dimension, 100)  # Clustering pour des recherches plus rapides
-#     index.train(reduced_embeddings)
-#     index.add(reduced_embeddings)
-#     return index, pca
+def load_faiss(embeddings):
+    # Réduction de la dimensionnalité avec PCA pour accélérer les recherches
+    dimension = 128  # Réduire la dimension des embeddings
+    pca = faiss.PCAMatrix(embeddings.shape[1], dimension)
+    pca.train(embeddings)
+    reduced_embeddings = pca.apply_py(embeddings)
+    index = faiss.IndexFlatIP(dimension)  # Produit scalaire pour la similarité cosine
+    index = faiss.IndexIVFFlat(index, dimension, 100)  # Clustering pour des recherches plus rapides
+    index.train(reduced_embeddings)
+    index.add(reduced_embeddings)
+    return index, pca
 
 # def load_or_create_index(df, INDEX_PATH, embedding_model):
 #     if os.path.exists(INDEX_PATH):
@@ -108,7 +108,7 @@ def rerank_results(client, query, results, texts, model="mistral-large-latest"):
     for idx in results:
         text = texts[idx]
         prompt = f"Query: {query}\nDocument: {text}\nRelevance (1-10):"
-        response = client.chat.complete(model=model, messages=[{"role": "user", "content": prompt}])
+        response = client.chat.complete(model=model, messages=[{"role": "user", "content": prompt}], max_tokens=300 )
         score = int(re.findall(r'\d+', response.choices[0].message.content.strip())[0])
         ranked_results.append((idx, score))
 
@@ -117,12 +117,12 @@ def rerank_results(client, query, results, texts, model="mistral-large-latest"):
     return [r[0] for r in ranked_results]
 
 
-def search_and_rerank(pca,client, embedding_model, query, index, texts, top_k=5):
+def search_and_rerank(pca,client, embedding_model, query, index, texts, top_k=3):
     # Recherche initiale
     query_embedding = embedding_model.encode([query])
     query_reduced = pca.apply_py(query_embedding)
     distances, indices = index.search(query_reduced, top_k)
-    time.sleep(2)
+    
 
     # Reranking
     ranked_indices = rerank_results(client, query, indices[0], texts)
@@ -134,8 +134,36 @@ def generate_final_response(client, query, retrieved_texts, model="mistral-large
     Génère une réponse basée sur la requête et les textes récupérés.
     """
     context = "\n\n".join(retrieved_texts)
-    prompt = f"Context:\n{context}\n\nQuestion: {query}\n\nAnswer:"
+    prompt = f"Context:\n{context}\n\nQuestion: {query}\n\nAnswer(in less than 100 words):"
 
     # Appel au modèle de génération
     response = client.chat.complete(model=model, messages=[{"role": "user", "content": prompt}])
     return response.choices[0].message.content.strip()
+
+
+import pandas as pd
+
+def detect_summary_column(df):
+    """
+    Détecte automatiquement la colonne contenant les résumés.
+    Stratégies utilisées :
+    1. Recherche de mots-clés dans les noms de colonnes.
+    2. Détection par la longueur moyenne des textes.
+    """
+    # Liste de mots-clés pour les noms de colonnes
+    keywords = ['summary', 'plot', 'description', 'text', 'content']
+    
+    # Étape 1 : Chercher une colonne avec un mot-clé dans son nom
+    for col in df.columns:
+        if any(keyword in col.lower() for keyword in keywords):
+            return col
+    
+    # Étape 2 : Si aucun mot-clé trouvé, utiliser la colonne avec la plus grande longueur moyenne
+    avg_lengths = df.apply(lambda col: col.astype(str).str.len().mean())
+    return avg_lengths.idxmax()
+
+# Exemple d'utilisation
+# df = pd.read_csv("\uploaded_dataset\wiki_movie_plots_deduped.csv")
+# summary_column = detect_summary_column(df)
+# print(f"Colonne détectée pour les résumés : {summary_column}")
+# resumes = df[summary_column].tolist()

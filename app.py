@@ -21,6 +21,35 @@ def main():
     if 'history' not in st.session_state:
         st.session_state['history'] = []
 
+    client, model = llm_interface.load_mistral()
+    # df = rerank.load_data("uploaded_dataset/wiki_movie_plots_deduped.csv").head(5000)
+    # embedding_model= rerank.load_embedding_model()
+    # embeddings = rerank.get_embeddings(df,embedding_model)
+    # index, pca = rerank.load_faiss(embeddings)
+
+    # Chargement ou création des embeddings et de l'index FAISS au début
+    if 'embeddings' not in st.session_state:
+        
+        df = rerank.load_data("uploaded_dataset/wiki_movie_plots_deduped.csv").head(5000)
+        embedding_model = rerank.load_embedding_model()
+        embeddings = rerank.get_embeddings(df, embedding_model)
+        index, pca = rerank.load_faiss(embeddings)
+        
+        # Stockage des résultats dans st.session_state
+        st.session_state['embeddings'] = embeddings
+        st.session_state['index'] = index
+        st.session_state['pca'] = pca
+        st.session_state['df'] = df
+        st.session_state['embedding_model'] = embedding_model
+    else:
+        # Chargement des résultats depuis st.session_state
+        embeddings = st.session_state['embeddings']
+        index = st.session_state['index']
+        pca = st.session_state['pca']
+        df = st.session_state['df']
+        embedding_model = st.session_state['embedding_model']
+
+
     # Création d'une fonction pour gérer l'envoi des messages
     def handle_send_message():
         user_input = st.session_state.user_input
@@ -33,7 +62,7 @@ def main():
 
             ##test simon  rerank
 
-            client, model = llm_interface.load_mistral()
+            
             # texts = create_db.csv_to_long_text("uploaded_dataset/wiki_movie_plots_deduped.csv")
             # embeddings = rerank.get_embeddings_by_chunks(texts, client, model)
             # # embeddings = create_db.get_and_save_embeddings_to_chroma(texts, client,"./database")
@@ -42,10 +71,7 @@ def main():
             # response = llm_interface.query_mistral(results, st.session_state.history, api_key) 
             # print(results)
 
-            df = rerank.load_data("uploaded_dataset/wiki_movie_plots_deduped.csv").head(5000)
-            embedding_model= rerank.load_embedding_model()
-            embeddings = rerank.get_embeddings(df,embedding_model)
-            index, pca = rerank.load_faiss(embeddings)
+            
             results= rerank.search_and_rerank(pca, client, embedding_model, processed_input, index, df['Plot'].tolist())
             # response = llm_interface.query_mistral(results, st.session_state.history, api_key) 
             response = rerank.generate_final_response(client, processed_input, results)
