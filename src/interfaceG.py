@@ -20,68 +20,6 @@ def title():
         <p style="text-align: center; font-size: 16px; color: #777;">Interact with the AI and get insightful answers to your queries</p>
     """, unsafe_allow_html=True)
 
-def create_box_choices(rag_methods, selected_method):
-    """Function to create custom styled buttons for RAG methods."""
-    
-    # Inject custom CSS for styling
-    st.markdown("""
-        <style>
-            /* styles.css */
-            .custom-radio-button {
-                background-color: #f0f8ff;
-                border: 2px solid #007BFF;
-                border-radius: 25px;
-                padding: 10px 20px;
-                margin: 5px;
-                cursor: pointer;
-                font-size: 16px;
-                text-align: center;
-                color: #007BFF;
-                transition: background-color 0.3s, color 0.3s;
-            }
-
-            .custom-radio-button.selected {
-                background-color: #007BFF;
-                color: white;
-            }
-
-            .radio-container {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                gap: 20px;
-                margin: 10px 0;
-            }
-        </style>
-    """, unsafe_allow_html=True)
-    
-    # Créer un conteneur flex pour les boutons
-    st.markdown('<div class="radio-container">', unsafe_allow_html=True)
-
-    # Créer les boutons avec le texte approprié
-    for method in rag_methods:
-        is_selected = selected_method == method
-        button_class = "custom-radio-button" + (" selected" if is_selected else "")
-        
-        # Créer un bouton pour chaque méthode
-        if st.button(method, key=method):
-            selected_method = method  # Mettre à jour la méthode sélectionnée
-
-        # Appliquer la classe CSS appropriée (selected ou non)
-        st.markdown(f'''
-            <div class="{button_class}">
-                {method}
-            </div>
-        ''', unsafe_allow_html=True)
-
-    st.markdown('</div>', unsafe_allow_html=True)
-
-    # Afficher la méthode sélectionnée
-    st.write(f"Vous avez sélectionné: {selected_method}")
-    
-    return selected_method
-
-
 def initialize_session_state():
     """Initialize session state if necessary."""
     if 'user_input' not in st.session_state:
@@ -163,12 +101,15 @@ def handle_file_upload():
         rag_methods = ["Classic", "ColBERTv2", "Simon"]
         selected_rag_method = None
 
-        # Display buttons and store selection
-        for method in rag_methods:
-            if st.button(method):
-                selected_rag_method = method
-                st.session_state.rag_method = selected_rag_method
-                st.write(f"RAG Method selected: **{st.session_state.rag_method}**")
+        # Create columns and display buttons
+        cols = st.columns(len(rag_methods))
+        
+        for i, method in enumerate(rag_methods):
+            with cols[i]:
+                if st.button(method):
+                    selected_rag_method = method
+                    st.session_state.rag_method = selected_rag_method
+                    st.write(f"RAG Method selected: **{st.session_state.rag_method}**")
 
     else:
         st.write(f"RAG Method selected: **{st.session_state.rag_method}** (locked)")
