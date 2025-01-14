@@ -4,11 +4,19 @@ import src.create_db as create_db
 import src.helpers as helpers
 import src.llm_interface as llm_interface
 
+with open('src/styles.css') as f:
+    st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+
 def title():
     """
     Function to apply all the styles and layout configurations for the RAG Chatbot.
     """
     # Set up a nice title and header
+
+    st.markdown(f"""
+    <link rel="stylesheet" href="path_to_your_css_file.css?{int(time.time())}">
+    """, unsafe_allow_html=True)
+
     st.set_page_config(page_title="RAG Chatbot", page_icon="🤖", layout="centered")
 
     # Title and description with style
@@ -31,38 +39,6 @@ import streamlit as st
 def create_box_choices(rag_methods, selected_method):
     """Function to create custom styled buttons for RAG methods."""
     
-    # Style pour les boutons
-    st.markdown("""
-        <style>
-            .custom-radio-button {
-                display: inline-block;
-                background-color: white;
-                border: 2px solid #007BFF;
-                border-radius: 25px;
-                padding: 10px 20px;
-                margin: 5px;
-                cursor: pointer;
-                font-size: 16px;
-                text-align: center;
-                color: #007BFF;
-                transition: background-color 0.3s, color 0.3s;
-            }
-
-            .custom-radio-button.selected {
-                background-color: #007BFF;
-                color: white;
-            }
-
-            .radio-container {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                gap: 20px;
-                margin: 10px 0;
-            }
-        </style>
-    """, unsafe_allow_html=True)
-
     # Créer un conteneur flex pour les boutons
     st.markdown('<div class="radio-container">', unsafe_allow_html=True)
 
@@ -87,17 +63,20 @@ def create_box_choices(rag_methods, selected_method):
     st.markdown("""
         <script>
             function selectMethod(method) {
+                // Récupérer tous les boutons
                 const buttons = document.querySelectorAll('.custom-radio-button');
+
+                // Supprimer la classe "selected" de tous les boutons
                 buttons.forEach(button => {
                     button.classList.remove('selected');
                 });
 
-                // Trouver le bouton cliqué et le marquer comme sélectionné
+                // Trouver le bouton cliqué et ajouter la classe "selected"
                 const selectedButton = Array.from(buttons).find(button => button.dataset.method === method);
                 selectedButton.classList.add('selected');
 
-                // Mettre à jour la méthode RAG dans Streamlit en utilisant Session State
-                window.parent.postMessage({ 'rag_method': method }, "*");
+                // Afficher le nom de la méthode sélectionnée dans la console
+                console.log('Méthode sélectionnée:', method);
             }
         </script>
     """, unsafe_allow_html=True)
