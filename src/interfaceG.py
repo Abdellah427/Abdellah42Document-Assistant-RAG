@@ -23,7 +23,8 @@ def title():
 
 def create_box_choices(rag_methods, selected_method):
     """Function to create custom styled buttons for RAG methods."""
-     st.markdown("""
+    
+    st.markdown("""
         <style>
             /* styles.css */
             .custom-radio-button {
