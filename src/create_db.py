@@ -33,7 +33,7 @@ def csv_to_list_str(csv_path: str) -> list[str]:
     return text_output
 
 
-def create_vector_db_colbertv2(csv_path: str, db_path: str,max_document_length=600) -> str:
+def create_vector_db_colbertv2(csv_path: str, db_path: str,max_document_length=400) -> str:
     """
     Creates a vector database using the ColBERT model from a CSV file.
 
@@ -58,7 +58,7 @@ def create_vector_db_colbertv2(csv_path: str, db_path: str,max_document_length=6
     index_path = RAG_Corbert.index(
         collection=documents,
         max_document_length=max_document_length,  # Truncate documents longer than 100 tokens
-        split_documents=False,    # Automatically split documents if too large
+        split_documents=True,    # Automatically split documents if too large
         use_faiss=True           # Use FAISS for efficient vector search
     )
 
