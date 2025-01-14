@@ -33,6 +33,9 @@ def initialize_session_state():
         st.session_state['user_input'] = ""
     if 'history' not in st.session_state:
         st.session_state['history'] = []
+    if 'rag_method' not in st.session_state:
+        st.session_state['rag_method'] = "Classic" 
+
 
 def handle_send_message(mistral_key):
     """Handle sending a message from the user to the chatbot and update history."""
@@ -42,7 +45,15 @@ def handle_send_message(mistral_key):
         processed_input = helpers.preprocess_input(user_input)
 
         # Query the most similar documents to the user input
-        docs = create_db.query_vector_db_colbertv2(user_input, 2)
+        if st.session_state.rag_method == "Classic":
+            docs = create_db.query_vector_db_colbertv2(user_input, 2)
+        elif st.session_state.rag_method == "ColBERTv2":
+            docs = create_db.query_vector_db_colbertv2(user_input, 2)
+        elif st.session_state.rag_method == "Simon":
+            docs = create_db.query_vector_db_colbertv2(user_input, 2)
+        else:
+            docs = []
+
         st.session_state['docs'] = docs
         processed_input = f"Question: \n\n{user_input} \n\nHere are some documents to answer the question: \n\n{docs}"
 
@@ -104,10 +115,21 @@ def handle_file_upload():
                     f.write(uploaded_file.getbuffer())
                 csv_paths.append(file_path)
 
-            # Create the database from the first uploaded file
             uploaded_file = uploaded_files[0]
             csv_path = os.path.join(csv_folder, uploaded_file.name)
-            index_path = create_db.create_vector_db_colbertv2(csv_path, db_path)
-            st.write(f"Database created successfully ! ")
+            # Create the database based on the selected RAG method
+            if st.session_state.rag_method == "Classic":
+                index_path = create_db.create_vector_db_colbertv2(csv_path, db_path)
+                st.write(f"Database created with Classic successfully ! ")
+            elif st.session_state.rag_method == "ColBERTv2":
+                index_path = create_db.create_vector_db_colbertv2(csv_path, db_path)
+                st.write(f"Database created with ColBERTv2 successfully ! ")
+            elif st.session_state.rag_method == "Simon":
+                index_path = create_db.create_vector_db_colbertv2(csv_path, db_path)
+                st.write(f"Database created with Simon successfully ! ")
+            else:
+                st.write("Invalid RAG method selected.")
+
+            
         else:
             st.write("Please upload CSV files.")
