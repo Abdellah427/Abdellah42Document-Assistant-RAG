@@ -13,6 +13,7 @@ def main():
     api_key = "5Lf75S6e7HwH2K4FDO2WViZVCTT0XSMH"
 
     #create_db.load_model_Colbert()
+    INDEX_PATH = "saved_index/faiss_index"
 
     # Initialisation de l'état de session si nécessaire
     if 'user_input' not in st.session_state:
@@ -33,18 +34,26 @@ def main():
             ##test simon  rerank
 
             client, model = llm_interface.load_mistral()
-            texts = create_db.csv_to_long_text("uploaded_dataset/wiki_movie_plots_deduped.csv")
+            # texts = create_db.csv_to_long_text("uploaded_dataset/wiki_movie_plots_deduped.csv")
             # embeddings = rerank.get_embeddings_by_chunks(texts, client, model)
-            embeddings = create_db.get_and_save_embeddings_to_chroma(texts, client,"./database")
-            index = rerank.load_faiss_index(embeddings)
-            results= rerank.search_and_rerank(processed_input, client, index, texts)
+            # # embeddings = create_db.get_and_save_embeddings_to_chroma(texts, client,"./database")
+            # index = rerank.load_faiss_index(embeddings)
+            # results= rerank.search_and_rerank(processed_input, client, index, texts)
+            # response = llm_interface.query_mistral(results, st.session_state.history, api_key) 
+            # print(results)
 
-
+            df = rerank.load_data("uploaded_dataset/wiki_movie_plots_deduped.csv").head(5000)
+            embedding_model= rerank.load_embedding_model()
+            embeddings = rerank.get_embeddings(df,embedding_model)
+            index, pca = rerank.load_faiss(embeddings)
+            results= rerank.search_and_rerank(pca, client, embedding_model, processed_input, index, df['Plot'].tolist())
+            # response = llm_interface.query_mistral(results, st.session_state.history, api_key) 
+            response = rerank.generate_final_response(client, processed_input, results)
 
             # Envoi de la requête au model LLM avec l'historique des échanges et la clé API
             # response = llm_interface.query_mistral(processed_input, st.session_state.history, api_key) 
 
-            response = llm_interface.query_mistral(results, st.session_state.history, api_key) 
+            
 
             # Formatage de la réponse retournée par le LLM
             formatted_response = helpers.format_response(response) # Pour l'instant on ne fait rien
@@ -81,21 +90,32 @@ def main():
 
             db_path = "./database"
             os.makedirs(db_path, exist_ok=True)
+            uploaded_file = uploaded_files[0]
+            csv_path = os.path.join(csv_folder, uploaded_file.name)
+            db_path = os.path.join(db_path, uploaded_file.name)
             # Création de la base de données
 
             #Celle de Romain
             
-            #collection = create_db.create_vector_db(db_path)
-            #logging.info("Database created successfully!")
-            #create_db.process_csvs(csv_folder, collection)
-            #logging.info("CSV files processed successfully!")
+            # collection = create_db.create_vector_db(db_path)
+            # logging.info("Database created successfully!")
+            # create_db.process_csvs(csv_folder, collection)
+            # logging.info("CSV files processed successfully!")
             
-            #st.write("Database created successfully!")
+            # st.write("Database created successfully!")
             
 
             #Celle de ColBERTv2
-            index_name = create_db.create_vector_db_colbertv2(csv_path,db_path)
+            # index_name = create_db.create_vector_db_colbertv2(csv_path,db_path)
             
+
+
+            ## mistral
+
+            # client, model = llm_interface.load_mistral()
+            # texts = create_db.csv_to_long_text("uploaded_dataset/wiki_movie_plots_deduped.csv")
+            # # embeddings = rerank.get_embeddings_by_chunks(texts, client, model)
+            # embeddings = create_db.get_and_save_embeddings_to_chroma(texts, client,"./database")
 
             
         else:

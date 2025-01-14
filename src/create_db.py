@@ -14,6 +14,11 @@ import faiss
 import time
 import re
 
+import psutil
+import logging
+# logging.basicConfig(level=logging.DEBUG)
+
+
 
 # Abdellah
 
@@ -152,28 +157,48 @@ if __name__ == "__main__":
 
 #     print("embeddings saved")
 
-def get_and_save_embeddings_to_chroma(texts, client, db_path, model="mistral-embed", chunk_size=512, delay=1):
+def get_and_save_embeddings_to_chroma(texts, client, db_path, model="mistral-embed", chunk_size=1, delay=2):
 
   # Create ChromaDB client
-  chroma_client = Client(Settings(persist_directory=db_path))
+  chroma_client = Client(Settings(
+    persist_directory=db_path,
+    # allow_reset=True,  # Permet de réinitialiser l'index si nécessaire
+    index_settings={"max_elements": 1000, "ef_construction": 200, "M": 16}  # Ajustez selon vos besoins
+))
+  print("client")
 
   # Check if collection exists (optional)
   collection_name = "text_embeddings"
   if collection_name not in chroma_client.list_collections():
       collection = chroma_client.create_collection(collection_name)
+      print("creation collection")
   else:
       collection = chroma_client.get_collection(collection_name)
+      print("get collection")
 
   # Process text chunks
   for i, chunk in enumerate(chunker(texts, chunk_size)):
     # Generate embeddings for the chunk
     embeddings_response = client.embeddings.create(model=model, inputs=chunk)
+    print(f"Embeddings response: {embeddings_response}")
     embeddings = [d.embedding for d in embeddings_response.data]
+    print(f"Embeddings generated: {embeddings}")
 
     # Add embeddings and metadata to ChromaDB
     for j, text in enumerate(chunk):
-      metadata = {"text": text}  # Add relevant metadata (e.g., text itself)
-      collection.add(ids=[f"{i}_{j}"], embeddings=embeddings[j:j+1], metadatas=[metadata])
+      # metadata = {"text": text}  # Add relevant metadata (e.g., text itself)
+      # collection.add(ids=[f"{i}_{j}"], embeddings=embeddings[j:j+1], metadatas=[metadata])
+      # print("chunk added")
+      try:
+        metadata = {"text": text}
+        print(f"Embedding shape: {len(embeddings[j:j+1])}")
+        print(f"Memory usage: {psutil.virtual_memory().percent}%")
+        collection.add(ids=[f"{i}_{j}"], embeddings=embeddings[j:j+1], metadatas=[metadata])
+
+        print("chunk added")
+      except Exception as e:
+        print(f"Error while adding to collection: {e}")
+        raise
 
     print(f"Processed chunk {i+1} of {len(texts) // chunk_size + 1}")
     time.sleep(delay)
@@ -187,3 +212,5 @@ def chunker(iterable, chunksize):
   """Yields successive n-sized chunks from an iterable."""
   for i in range(0, len(iterable), chunksize):
     yield iterable[i:i + chunksize]
+
+
