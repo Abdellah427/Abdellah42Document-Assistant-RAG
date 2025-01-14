@@ -68,11 +68,15 @@ def create_vector_db_colbertv2(csv_path: str, db_path: str,max_document_length=3
 
 def document_splitter(documents: list[str], document_ids: list[str], chunk_size: int) -> list[str]:
     result = []
+    if not isinstance(documents, list):
+        raise TypeError("Expected 'documents' to be a list of strings.")
+    
     for doc in documents:
+        if not isinstance(doc, str):
+            raise TypeError(f"Expected each document to be a string, but got {type(doc)}.")
         # Split the document into chunks of chunk_size
         result.extend([doc[i:i + chunk_size] for i in range(0, len(doc), chunk_size)])
     return result
-
 
 
 def query_vector_db_colbertv2(query_text: str, n_results: int = 5) -> list[dict]:
