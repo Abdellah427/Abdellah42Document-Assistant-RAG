@@ -27,7 +27,7 @@ def initialize_session_state():
     if 'history' not in st.session_state:
         st.session_state['history'] = []
     if 'rag_method' not in st.session_state:
-        st.session_state['rag_method'] = "MiniLM_L6" 
+        st.session_state['rag_method'] = "" 
 
 
 def handle_send_message(mistral_key):
