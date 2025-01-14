@@ -23,9 +23,10 @@ def title():
 def create_box_choices(rag_methods, selected_method):
     """Function to create custom styled buttons for RAG methods."""
     
-    # Inject custom CSS for styling the buttons
+    # Inject custom CSS for styling
     st.markdown("""
         <style>
+            /* styles.css */
             .custom-radio-button {
                 background-color: #f0f8ff;
                 border: 2px solid #007BFF;
@@ -53,27 +54,29 @@ def create_box_choices(rag_methods, selected_method):
             }
         </style>
     """, unsafe_allow_html=True)
-
-    # Create a flex container for the buttons
+    
+    # Créer un conteneur flex pour les boutons
     st.markdown('<div class="radio-container">', unsafe_allow_html=True)
 
-    # Create the buttons with custom styling
+    # Créer les boutons avec le texte approprié
     for method in rag_methods:
         is_selected = selected_method == method
         button_class = "custom-radio-button" + (" selected" if is_selected else "")
         
-        # Use Streamlit's markdown for custom HTML rendering
-        button_html = f'''
-            <button class="custom-radio-button {button_class}" 
-                    onclick="window.location.href='?rag_method={method}'">
+        # Créer un bouton pour chaque méthode
+        if st.button(method, key=method):
+            selected_method = method  # Mettre à jour la méthode sélectionnée
+
+        # Appliquer la classe CSS appropriée (selected ou non)
+        st.markdown(f'''
+            <div class="{button_class}">
                 {method}
-            </button>
-        '''
-        st.markdown(button_html, unsafe_allow_html=True)
+            </div>
+        ''', unsafe_allow_html=True)
 
     st.markdown('</div>', unsafe_allow_html=True)
 
-    # Display the selected method (for debugging purposes)
+    # Afficher la méthode sélectionnée
     st.write(f"Vous avez sélectionné: {selected_method}")
     
     return selected_method
@@ -156,10 +159,16 @@ def handle_file_upload():
         st.session_state['rag_method_locked'] = False
 
     if not st.session_state['rag_method_locked']:
-
+        # Create buttons for selecting RAG method
         rag_methods = ["Classic", "ColBERTv2", "Simon"]
+        selected_rag_method = None
 
-        create_box_choices(rag_methods, st.session_state.rag_method)
+        # Display buttons and store selection
+        for method in rag_methods:
+            if st.button(method):
+                selected_rag_method = method
+                st.session_state.rag_method = selected_rag_method
+                st.write(f"RAG Method selected: **{st.session_state.rag_method}**")
 
     else:
         st.write(f"RAG Method selected: **{st.session_state.rag_method}** (locked)")
