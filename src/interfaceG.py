@@ -39,7 +39,7 @@ def handle_send_message(mistral_key):
 
         # Query the most similar documents to the user input
         if st.session_state.rag_method == "Classic":
-            docs = create_db.query_vector_db_Classic(user_input, 5) 
+            docs = create_db.query_vector_db_colbertv2(user_input, 5) 
         elif st.session_state.rag_method == "ColBERTv2":
             docs = create_db.query_vector_db_colbertv2(user_input, 2)
         elif st.session_state.rag_method == "Simon":
@@ -58,7 +58,7 @@ def handle_send_message(mistral_key):
 
         # Update history with user input and chatbot response
         st.session_state.history.append(f"You: {user_input}")
-        st.session_state.history.append(f"Chatbot: \n\n{formatted_response}")
+        st.session_state.history.append(f"Chatbot: \n\n{docs+formatted_response}")
 
         # Clear user input field after sending
         st.session_state.user_input = "" 
@@ -164,7 +164,7 @@ def handle_file_upload():
             csv_path = os.path.join(csv_folder, uploaded_file.name)
             # Create the database based on the selected RAG method
             if st.session_state.rag_method == "Classic":
-                create_db.query_vector_db_Classic(csv_path)
+                create_db.create_vector_db_colbertv2(csv_path)
                 st.success(f"Database created with Classic successfully!")
             elif st.session_state.rag_method == "ColBERTv2":
                 create_db.create_vector_db_colbertv2(csv_path)
