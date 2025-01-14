@@ -31,8 +31,3 @@ def query_mistral(user_input,history,api_key):
     
 
 
-def load_mistral():
-    api_key = "uvPKnZ4G0YFoM6KBIUkgF0KzE8dpmsgb"
-    model = "mistral-embed"
-    client = Mistral(api_key=api_key)
-    return client, model

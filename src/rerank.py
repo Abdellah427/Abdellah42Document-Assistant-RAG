@@ -1,52 +1,3 @@
-# import faiss
-# import numpy as np
-# from mistralai import Mistral
-# import time
-# import pandas as pd
-# import re
-# from sentence_transformers import SentenceTransformer
-
-# def load_faiss_index(embeddings):
-#     embedding_matrix = np.array(embeddings)
-#     dimension = embedding_matrix.shape[1]
-#     index = faiss.IndexFlatL2(dimension)
-#     index.add(embedding_matrix)
-#     return index
-
-# def get_embeddings_by_chunks(texts, client, model="mistral-embed", chunk_size=1024, delay=3):
-#     chunks = [texts[x: x + chunk_size] for x in range(0, len(texts), chunk_size)]
-#     embeddings = []
-#     for i, chunk in enumerate(chunks):
-#         response = client.embeddings.create(model=model, inputs=chunk)
-#         embeddings.extend([d.embedding for d in response.data])
-#         break
-#         time.sleep(delay)
-#     return embeddings
-
-
-# def rerank_results(query, results, texts, client, model="mistral-large-latest"):
-#     ranked_results = []
-#     for idx in results:
-#         text = texts[idx]
-#         prompt = f"Query: {query}\nDocument: {text}\nRelevance (1-10):"
-#         response = client.chat.complete(model=model, messages=[{"role": "user", "content": prompt}])
-#         score = int(re.findall(r'\d+', response.choices[0].message.content.strip())[0])
-#         ranked_results.append((idx, score))
-#     return sorted(ranked_results, key=lambda x: x[1], reverse=True)
-
-
-# def search_and_rerank(query, client, index, texts, top_k=5):
-#     # Recherche initiale
-#     logging.info(f"Starting search and reranking for query: {query}")
-#     query_embedding = client.embeddings.create(model="mistral-embed", inputs=[query]).data[0].embedding
-#     distances, indices = index.search(np.array([query_embedding]), top_k)
-#     time.sleep(5)
-
-#     # Reranking
-#     ranked_indices = rerank_results(query, indices[0], texts, client)
-#     print(ranked_indices)
-#     return [texts[idx] for idx, _ in ranked_indices]
-
 import pandas as pd
 from sentence_transformers import SentenceTransformer
 import faiss
@@ -56,6 +7,12 @@ import re
 import time
 import os
 import logging
+
+def load_mistral():
+    api_key = "uvPKnZ4G0YFoM6KBIUkgF0KzE8dpmsgb"
+    model = "mistral-embed"
+    client = Mistral(api_key=api_key)
+    return client, model
 
 def load_embedding_model():
     embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
@@ -87,34 +44,6 @@ def load_faiss(embeddings):
     index.add(reduced_embeddings)
     return index, pca
 
-# def load_or_create_index(df, INDEX_PATH, embedding_model):
-#     if os.path.exists(INDEX_PATH):
-#         index = faiss.read_index(INDEX_PATH)
-#         logging.info("Index loaded from disk.")
-#     else:
-#         embeddings=get_embeddings(df, embedding_model)
-#         dimension = 128  # Réduire la dimension des embeddings
-#         pca = faiss.PCAMatrix(embeddings.shape[1], dimension)
-#         pca.train(embeddings)
-#         reduced_embeddings = pca.apply_py(embeddings)
-#         index = faiss.IndexFlatIP(dimension)  # Produit scalaire pour la similarité cosine
-#         index = faiss.IndexIVFFlat(index, dimension, 100)  # Clustering pour des recherches plus rapides
-#         index.train(reduced_embeddings)
-#         index.add(reduced_embeddings)
-#         return index, pca
-
-# def rerank_results(client, query, results, texts, model="mistral-large-latest"):
-#     ranked_results = []
-#     for idx in results:
-#         text = texts[idx]
-#         prompt = f"Query: {query}\nDocument: {text}\nRelevance (1-10):"
-#         response = client.chat.complete(model=model, messages=[{"role": "user", "content": prompt}], max_tokens=300 )
-#         score = int(re.findall(r'\d+', response.choices[0].message.content.strip())[0])
-#         ranked_results.append((idx, score))
-
-#     # Trier par pertinence décroissante
-#     ranked_results.sort(key=lambda x: x[1], reverse=True)
-#     return [r[0] for r in ranked_results]
 
 def rerank_results(client, query, results, texts, model="mistral-large-latest"):
     prompts = [
@@ -134,17 +63,6 @@ def rerank_results(client, query, results, texts, model="mistral-large-latest"):
     ranked_results.sort(key=lambda x: x[1], reverse=True)
     return [r[0] for r in ranked_results]
 
-
-import asyncio
-
-# async def rerank_async(client, query, texts, model="mistral-large-latest"):
-#     tasks = []
-#     for text in texts:
-#         prompt = f"Query: {query}\nDocument: {text}\nRelevance (1-10):"
-#         tasks.append(client.chat.complete(model=model, messages=[{"role": "user", "content": prompt}]))
-#     responses = await asyncio.gather(*tasks)
-#     scores = [int(re.findall(r'\d+', res.choices[0].message.content.strip())[0]) for res in responses]
-#     return scores
 
 def search_and_rerank(pca,client, embedding_model, query, index, texts, top_k=3):
     # Recherche initiale
@@ -191,8 +109,3 @@ def detect_summary_column(df):
     avg_lengths = df.apply(lambda col: col.astype(str).str.len().mean())
     return avg_lengths.idxmax()
 
-# Exemple d'utilisation
-# df = pd.read_csv("\uploaded_dataset\wiki_movie_plots_deduped.csv")
-# summary_column = detect_summary_column(df)
-# print(f"Colonne détectée pour les résumés : {summary_column}")
-# resumes = df[summary_column].tolist()
