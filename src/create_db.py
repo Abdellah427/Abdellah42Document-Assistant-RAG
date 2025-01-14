@@ -33,7 +33,7 @@ def csv_to_list_str(csv_path: str) -> list[str]:
     return text_output
 
 
-def create_vector_db_colbertv2(csv_path: str, db_path: str,max_document_length=500) -> str:
+def create_vector_db_colbertv2(csv_path: str, db_path: str,max_document_length=600) -> str:
     """
     Creates a vector database using the ColBERT model from a CSV file.
 
