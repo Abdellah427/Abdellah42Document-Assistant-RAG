@@ -20,10 +20,10 @@ def title():
         <p style="text-align: center; font-size: 16px; color: #777;">Interact with the AI and get insightful answers to your queries</p>
     """, unsafe_allow_html=True)
 
-
 def create_box_choices(rag_methods, selected_method):
     """Function to create custom styled buttons for RAG methods."""
     
+    # Inject custom CSS for styling
     st.markdown("""
         <style>
             /* styles.css */
@@ -60,42 +60,26 @@ def create_box_choices(rag_methods, selected_method):
 
     # Créer les boutons avec le texte approprié
     for method in rag_methods:
-        if selected_method == method:
-            st.markdown(f'''
-                <div class="custom-radio-button selected" data-method="{method}" onclick="selectMethod('{method}')">
-                    {method}
-                </div>
-            ''', unsafe_allow_html=True)
-        else:
-            st.markdown(f'''
-                <div class="custom-radio-button" data-method="{method}" onclick="selectMethod('{method}')">
-                    {method}
-                </div>
-            ''', unsafe_allow_html=True)
+        is_selected = selected_method == method
+        button_class = "custom-radio-button" + (" selected" if is_selected else "")
+        
+        # Créer un bouton pour chaque méthode
+        if st.button(method, key=method):
+            selected_method = method  # Mettre à jour la méthode sélectionnée
+
+        # Appliquer la classe CSS appropriée (selected ou non)
+        st.markdown(f'''
+            <div class="{button_class}">
+                {method}
+            </div>
+        ''', unsafe_allow_html=True)
 
     st.markdown('</div>', unsafe_allow_html=True)
 
-    # Ajouter le script JavaScript pour gérer la sélection des boutons
-    st.markdown("""
-        <script>
-            function selectMethod(method) {
-                // Récupérer tous les boutons
-                const buttons = document.querySelectorAll('.custom-radio-button');
-
-                // Supprimer la classe "selected" de tous les boutons
-                buttons.forEach(button => {
-                    button.classList.remove('selected');
-                });
-
-                // Trouver le bouton cliqué et ajouter la classe "selected"
-                const selectedButton = Array.from(buttons).find(button => button.dataset.method === method);
-                selectedButton.classList.add('selected');
-
-                // Afficher le nom de la méthode sélectionnée dans la console
-                console.log('Méthode sélectionnée:', method);
-            }
-        </script>
-    """, unsafe_allow_html=True)
+    # Afficher la méthode sélectionnée
+    st.write(f"Vous avez sélectionné: {selected_method}")
+    
+    return selected_method
 
 def initialize_session_state():
     """Initialize session state if necessary."""
