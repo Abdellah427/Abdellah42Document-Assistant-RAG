@@ -107,16 +107,16 @@ def handle_file_upload():
     if not st.session_state['rag_method_locked']:
         # Create columns for displaying buttons horizontally and center them
         rag_methods = ["Classic", "ColBERTv2", "Simon"]
-        selected_rag_method = None
+        selected_rag_method = st.session_state.get('rag_method', None)
 
- # Create empty columns and align them to the center
+        # Create empty columns and align them to the center
         cols = st.columns(len(rag_methods))
 
         # Loop through rag methods and create buttons
         for i, method in enumerate(rag_methods):
             with cols[i]:
                 # Check if the button is selected, then highlight it
-                is_selected = (method == st.session_state.get('rag_method', ''))
+                is_selected = (method == selected_rag_method)
                 
                 # Add custom CSS to highlight the selected button
                 button_style = f"""
@@ -133,7 +133,10 @@ def handle_file_upload():
                 if st.button(method, key=method, use_container_width=True):
                     selected_rag_method = method
                     st.session_state.rag_method = selected_rag_method
-                    #st.write(f"RAG Method selected: **{st.session_state.rag_method}**")
+                    st.session_state['rag_method_locked'] = True  # Lock the selection
+                    # Keep the selected button highlighted
+                    st.write(f"RAG Method selected: **{st.session_state.rag_method}**")
+
 
     else:
         st.write(f"RAG Method selected: **{st.session_state.rag_method}** (locked)")
@@ -161,13 +164,13 @@ def handle_file_upload():
             csv_path = os.path.join(csv_folder, uploaded_file.name)
             # Create the database based on the selected RAG method
             if st.session_state.rag_method == "Classic":
-                create_db.create_vector_db_colbertv2(csv_path, db_path)
+                create_db.create_vector_db_colbertv2(csv_path)
                 st.success(f"Database created with Classic successfully!")
             elif st.session_state.rag_method == "ColBERTv2":
-                create_db.create_vector_db_colbertv2(csv_path, db_path)
+                create_db.create_vector_db_colbertv2(csv_path)
                 st.success(f"Database created with ColBERTv2 successfully!")
             elif st.session_state.rag_method == "Simon":
-                create_db.create_vector_db_colbertv2(csv_path, db_path)
+                create_db.create_vector_db_colbertv2(csv_path)
                 st.success(f"Database created with Simon successfully!")
         else:
             st.warning("Please upload CSV files.")
