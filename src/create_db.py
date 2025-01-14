@@ -8,9 +8,8 @@ from langchain.schema import Document
 from typing import List
 import streamlit as st
 import numpy as np
-from pydantic import Field
-from langchain.schema import BaseRetriever
-import src.CustomVectorRetriever as CustomVectorRetriever
+from src.CustomVectorRetriever import CustomVectorRetriever
+
 
 
 
