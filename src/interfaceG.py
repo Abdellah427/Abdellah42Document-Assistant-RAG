@@ -23,10 +23,9 @@ def title():
 def create_box_choices(rag_methods, selected_method):
     """Function to create custom styled buttons for RAG methods."""
     
-    # Inject custom CSS for styling
+    # Inject custom CSS for styling the buttons
     st.markdown("""
         <style>
-            /* styles.css */
             .custom-radio-button {
                 background-color: #f0f8ff;
                 border: 2px solid #007BFF;
@@ -54,29 +53,27 @@ def create_box_choices(rag_methods, selected_method):
             }
         </style>
     """, unsafe_allow_html=True)
-    
-    # Créer un conteneur flex pour les boutons
+
+    # Create a flex container for the buttons
     st.markdown('<div class="radio-container">', unsafe_allow_html=True)
 
-    # Créer les boutons avec le texte approprié
+    # Create the buttons with custom styling
     for method in rag_methods:
         is_selected = selected_method == method
         button_class = "custom-radio-button" + (" selected" if is_selected else "")
         
-        # Créer un bouton pour chaque méthode
-        if st.button(method, key=method):
-            selected_method = method  # Mettre à jour la méthode sélectionnée
-
-        # Appliquer la classe CSS appropriée (selected ou non)
-        st.markdown(f'''
-            <div class="{button_class}">
+        # Use Streamlit's markdown for custom HTML rendering
+        button_html = f'''
+            <button class="custom-radio-button {button_class}" 
+                    onclick="window.location.href='?rag_method={method}'">
                 {method}
-            </div>
-        ''', unsafe_allow_html=True)
+            </button>
+        '''
+        st.markdown(button_html, unsafe_allow_html=True)
 
     st.markdown('</div>', unsafe_allow_html=True)
 
-    # Afficher la méthode sélectionnée
+    # Display the selected method (for debugging purposes)
     st.write(f"Vous avez sélectionné: {selected_method}")
     
     return selected_method
