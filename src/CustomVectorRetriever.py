@@ -12,7 +12,10 @@ class CustomVectorRetriever(BaseRetriever):
         index (faiss.IndexFlatL2): FAISS index for vector searching.
         documents (List[Document]): List of documents stored as Document objects.
     """
-    embedding_function: callable = Field(...)
+    from typing import Callable
+
+    embedding_function: Callable = Field(...)
+
     index: object = Field(...)
     documents: list = Field(...)
 
