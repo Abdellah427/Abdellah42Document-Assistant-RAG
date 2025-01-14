@@ -58,7 +58,7 @@ def handle_send_message(mistral_key):
 
         # Update history with user input and chatbot response
         st.session_state.history.append(f"You: {user_input}")
-        st.session_state.history.append(f"Chatbot: \n\n{docs+formatted_response}")
+        st.session_state.history.append(f"Chatbot: \n\n{formatted_response}")
 
         # Clear user input field after sending
         st.session_state.user_input = "" 
