@@ -4,9 +4,6 @@ import src.create_db as create_db
 import src.helpers as helpers
 import src.llm_interface as llm_interface
 
-with open('src/styles.css') as f:
-    # Charger ou traiter le fichier
-    st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
 def title():
     """
@@ -26,6 +23,36 @@ def title():
 
 def create_box_choices(rag_methods, selected_method):
     """Function to create custom styled buttons for RAG methods."""
+     st.markdown("""
+        <style>
+            /* styles.css */
+            .custom-radio-button {
+                background-color: #f0f8ff;
+                border: 2px solid #007BFF;
+                border-radius: 25px;
+                padding: 10px 20px;
+                margin: 5px;
+                cursor: pointer;
+                font-size: 16px;
+                text-align: center;
+                color: #007BFF;
+                transition: background-color 0.3s, color 0.3s;
+            }
+
+            .custom-radio-button.selected {
+                background-color: #007BFF;
+                color: white;
+            }
+
+            .radio-container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 20px;
+                margin: 10px 0;
+            }
+        </style>
+    """, unsafe_allow_html=True)
     
     # Créer un conteneur flex pour les boutons
     st.markdown('<div class="radio-container">', unsafe_allow_html=True)
