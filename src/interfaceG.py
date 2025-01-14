@@ -4,7 +4,7 @@ import src.create_db as create_db
 import src.helpers as helpers
 import src.llm_interface as llm_interface
 
-with open('src/styles.css') as f:
+with open('styles.css') as f:
     st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
 def title():
