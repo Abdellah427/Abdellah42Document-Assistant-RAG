@@ -33,7 +33,7 @@ def csv_to_list_str(csv_path: str) -> list[str]:
     return text_output
 
 
-def create_vector_db_colbertv2(csv_path: str, db_path: str,max_document_length=350) -> str:
+def create_vector_db_colbertv2(csv_path: str, db_path: str,max_document_length=500) -> str:
     """
     Creates a vector database using the ColBERT model from a CSV file.
 
@@ -58,25 +58,12 @@ def create_vector_db_colbertv2(csv_path: str, db_path: str,max_document_length=3
     index_path = RAG_Corbert.index(
         collection=documents,
         max_document_length=max_document_length,  # Truncate documents longer than 100 tokens
-        split_documents=True,    # Automatically split documents if too large
-        use_faiss=True,           # Use FAISS for efficient vector search
-        document_splitter_fn=document_splitter
-
+        split_documents=False,    # Automatically split documents if too large
+        use_faiss=True           # Use FAISS for efficient vector search
     )
 
     return index_path
 
-def document_splitter(documents: list[str], document_ids: list[str], chunk_size: int) -> list[str]:
-    result = []
-    if not isinstance(documents, list):
-        raise TypeError("Expected 'documents' to be a list of strings.")
-    
-    for doc in documents:
-        if not isinstance(doc, str):
-            raise TypeError(f"Expected each document to be a string, but got {type(doc)}.")
-        # Split the document into chunks of chunk_size
-        result.extend([doc[i:i + chunk_size] for i in range(0, len(doc), chunk_size)])
-    return result
 
 
 def query_vector_db_colbertv2(query_text: str, n_results: int = 5) -> list[dict]:
