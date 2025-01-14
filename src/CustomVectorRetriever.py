@@ -2,6 +2,7 @@ from langchain.schema import Document
 from pydantic import Field
 from typing import List
 from langchain.schema import BaseRetriever
+from typing import Callable
 
 class CustomVectorRetriever(BaseRetriever):
     """
@@ -12,7 +13,7 @@ class CustomVectorRetriever(BaseRetriever):
         index (faiss.IndexFlatL2): FAISS index for vector searching.
         documents (List[Document]): List of documents stored as Document objects.
     """
-    from typing import Callable
+    
 
     embedding_function: Callable = Field(...)
 
