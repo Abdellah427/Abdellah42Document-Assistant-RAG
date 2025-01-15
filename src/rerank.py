@@ -110,7 +110,8 @@ def search_and_rerank(pca, query, index, texts, top_k=3):
     for i, idx in enumerate(indices[0]):
         doc_content = texts[idx]  # Get the content of the document
         doc_distance = distances[0][i]  # Get the corresponding distance
-        results.append(f"Content: {doc_content}, Distance: {doc_distance}")
+        doc_distance = round(doc_distance,3)
+        results.append(f"Content: {doc_content}\n\n Distance: {doc_distance}")
 
     return results
 
