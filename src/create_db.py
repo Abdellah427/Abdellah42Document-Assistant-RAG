@@ -39,7 +39,7 @@ def csv_to_list_str(csv_path: str) -> list[str]:
     text_output = []
 
     for _, row in df.iterrows():
-        row_text = [f"{column}: {row[column]}" for column in df.columns]
+        row_text = [f"{column}: {row[column]}\n\n" for column in df.columns]
         text_output.append(" ".join(row_text))
 
     return text_output

@@ -3,6 +3,8 @@ import os
 import src.create_db as create_db
 import src.helpers as helpers
 import src.llm_interface as llm_interface
+import src.rerank as rerank
+import faiss
 
 
 def title():
@@ -42,8 +44,10 @@ def handle_send_message(mistral_key):
             docs = create_db.query_vector_db_CustomVectorRetriever(user_input, 5) 
         elif st.session_state.rag_method == "ColBERTv2":
             docs = create_db.query_vector_db_colbertv2(user_input, 2)
-        elif st.session_state.rag_method == "Simon":
-            docs = create_db.query_vector_db_colbertv2(user_input, 2)
+        elif st.session_state.rag_method == "Rerank":
+             pca = faiss.read_VectorTransform("pca_file")
+             index = faiss.read_index("faiss_index_file")
+             docs = rerank.search_and_rerank(pca, client, processed_input, index, df['Plot'].tolist())
         else:
             docs = []
 
@@ -98,7 +102,7 @@ def handle_file_upload():
 
     if not st.session_state['rag_method_locked']:
         # Create buttons for selecting RAG method
-        rag_methods = ["MiniLM_L6", "ColBERTv2", "Simon"]
+        rag_methods = ["MiniLM_L6", "ColBERTv2", "Rerank"]
         selected_rag_method = None
 
         # Create columns and display buttons
@@ -106,7 +110,7 @@ def handle_file_upload():
         
     if not st.session_state['rag_method_locked']:
         # Create columns for displaying buttons horizontally and center them
-        rag_methods = ["MiniLM_L6", "ColBERTv2", "Simon"]
+        rag_methods = ["MiniLM_L6", "ColBERTv2", "Rerank"]
         selected_rag_method = st.session_state.get('rag_method', None)
 
         # Create empty columns and align them to the center
@@ -169,9 +173,9 @@ def handle_file_upload():
             elif st.session_state.rag_method == "ColBERTv2":
                 create_db.create_vector_db_colbertv2(csv_path)
                 st.success(f"Database created with ColBERTv2 successfully!")
-            elif st.session_state.rag_method == "Simon":
-                create_db.create_vector_db_colbertv2(csv_path)
-                st.success(f"Database created with Simon successfully!")
+            elif st.session_state.rag_method == "Rerank":
+                rerank.create_vector_db_all_MiniLM_L6_VS("uploaded_dataset/wiki_movie_plots_deduped_2000.csv")
+                st.success(f"Database created with Rerank successfully!")
         else:
             st.warning("Please upload CSV files.")
 
