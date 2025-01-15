@@ -47,8 +47,9 @@ If you want to quickly test the project without installing it locally, use the G
 
 4. The notebook will guide you through the following steps:
    - **Step 1**: Upload your documents.
-   - **Step 2**: Select a retrieval method.
-   - **Step 3**: Ask questions and interact with the assistant.
+   - **Step 2**: Unzip the uploaded documents so you can use them for test.
+   - **Step 3**: Select a retrieval method.
+   - **Step 4**: Ask questions and interact with the assistant.
 
 ---
 
