@@ -43,7 +43,7 @@ If you want to quickly test the project without installing it locally, use the G
    - `Runtime` → `Change runtime type` → Set **Hardware accelerator** to **GPU** (preferably T4).
 
 3. Follow the instructions in the notebook or consult the YouTube tutorial for guidance:  
-   **[Watch Tutorial on YouTube]([https://www.youtube.com/watch?v=-UWt5vqsP4Y)**
+   **[Watch Tutorial on YouTube](https://www.youtube.com/watch?v=-UWt5vqsP4Y)**
 
 4. The notebook will guide you through the following steps:
    - **Step 1**: Upload your documents.
