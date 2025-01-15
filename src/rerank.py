@@ -71,7 +71,7 @@ def create_vector_db_all_MiniLM_L6_VS(csv_path: str) -> None:
 
 
 
-def search_and_rerank(pca,client, query, index, texts, top_k=3):
+def search_and_rerank(pca, query, index, texts, top_k=3):
     # Recherche initiale
     embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
     query_embedding = embedding_model.encode([query])
