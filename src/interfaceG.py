@@ -188,11 +188,11 @@ def handle_file_upload():
                 full_doc = create_db.csv_to_list_str(csv_path)
     
             elif file_extension == ".pdf":
-                full_doc = create_db.extract_text_from_pdf(csv_path)
+                full_doc = create_db.extract_paragraphs_from_pdf(csv_path)
                     
 
             # 4. Create the database based on the selected RAG method
-            
+
 
             if st.session_state.rag_method == "Retriever":
                 create_db.create_vector_db_all_MiniLM_L6(csv_path)
