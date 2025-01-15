@@ -115,25 +115,39 @@ def rerank_results(query, results, texts, model="mistral-large-latest"):
 
 
 def search_and_rerank(pca, query, index, texts, top_k=3):
+    """
+    Effectue une recherche initiale, applique une réduction de dimension avec PCA,
+    et rerank les résultats avec un LLM.
 
-    # Recherche initiale
+    Args:
+        pca: Un objet PCA pour réduire les dimensions des embeddings.
+        query (str): La requête de l'utilisateur.
+        index: L'index de recherche (par ex., FAISS).
+        texts (list[str]): Liste des documents associés à l'index.
+        top_k (int): Nombre de résultats à retourner (par défaut 3).
+
+    Returns:
+        list[str]: Les 3 documents les plus proches après reranking, avec leur distance initiale.
+    """
+    # Étape 1 : Recherche initiale
     embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
     query_embedding = embedding_model.encode([query])
     query_reduced = pca.apply_py(query_embedding)
     distances, indices = index.search(query_reduced, top_k)
-    
 
-    # Reranking
+    # Étape 2 : Reranking des résultats avec un LLM
     ranked_indices = rerank_results(query, indices[0], texts)
 
+    # Étape 3 : Associer les distances aux résultats rerankés
     ranked_results = []
-    for idx in ranked_indices:
-        original_index = list(indices[0]).index(idx)  # Trouver l'indice original
+    for idx in ranked_indices[:top_k]:  # Limite aux top_k résultats rerankés
+        original_index = list(indices[0]).index(idx)  # Trouve l'indice d'origine
         ranked_results.append(
             f"Document: {texts[idx]}, Distance: {distances[0][original_index]:.4f}"
         )
 
     return ranked_results
+
 
 
 
