@@ -40,7 +40,7 @@ def handle_send_message(mistral_key):
         processed_input = helpers.preprocess_input(user_input)
 
         # Query the most similar documents to the user input
-        if st.session_state.rag_method == "MiniLM_L6":
+        if st.session_state.rag_method == "Retriever":
             docs = create_db.query_vector_db_CustomVectorRetriever(user_input, 5) 
         elif st.session_state.rag_method == "ColBERTv2":
             docs = create_db.query_vector_db_colbertv2(user_input, 2)
@@ -103,7 +103,7 @@ def handle_file_upload():
 
     if not st.session_state['rag_method_locked']:
         # Create buttons for selecting RAG method
-        rag_methods = ["MiniLM_L6", "ColBERTv2", "Rerank"]
+        rag_methods = ["Retriever", "ColBERTv2", "Rerank"]
         selected_rag_method = None
 
         # Create columns and display buttons
@@ -111,7 +111,7 @@ def handle_file_upload():
         
     if not st.session_state['rag_method_locked']:
         # Create columns for displaying buttons horizontally and center them
-        rag_methods = ["MiniLM_L6", "ColBERTv2", "Rerank"]
+        rag_methods = ["Retriever", "ColBERTv2", "Rerank"]
         selected_rag_method = st.session_state.get('rag_method', None)
 
         # Create empty columns and align them to the center
@@ -168,9 +168,9 @@ def handle_file_upload():
             uploaded_file = uploaded_files[0]
             csv_path = os.path.join(csv_folder, uploaded_file.name)
             # Create the database based on the selected RAG method
-            if st.session_state.rag_method == "MiniLM_L6":
-                create_db.create_vector_db_all_MiniLM_L6(csv_path)
-                st.success(f"Database created with MiniLM_L6 successfully!")
+            if st.session_state.rag_method == "Retriever":
+                create_db.create_vector_db_all_Retriever(csv_path)
+                st.success(f"Database created with Retriever successfully!")
             elif st.session_state.rag_method == "ColBERTv2":
                 create_db.create_vector_db_colbertv2(csv_path)
                 st.success(f"Database created with ColBERTv2 successfully!")

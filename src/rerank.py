@@ -4,6 +4,7 @@ import faiss
 import numpy as np
 from mistralai import Mistral
 import re
+import src.create_db as create_db
 
 def load_mistral():
     """
@@ -25,13 +26,6 @@ def load_data(csv_path):
     return df
 
 
-def get_embeddings(df,embedding_model):
-    
-    # Générer des embeddings pour les résumés
-    embeddings = embedding_model.encode(df["Plot"].tolist(), show_progress_bar=True)
-
-    return embeddings
-
 
 def load_faiss(embeddings: np.ndarray) :
     """
@@ -51,7 +45,6 @@ def load_faiss(embeddings: np.ndarray) :
     index.train(reduced_embeddings)
     index.add(reduced_embeddings)
     return index, pca
-
 
 def create_vector_db_all_MiniLM_L6_VS(csv_path: str) -> None:
     """
