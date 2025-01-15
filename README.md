@@ -37,7 +37,7 @@ If you want to quickly test the project without installing it locally, use the G
 
 
 1. Open the Colab notebook by clicking the link below:  
-   **[Test on Google Colab](https://drive.google.com/file/d/1b1hJaGoUAaYJy6zFI608trYU6GUQJvCo/view?usp=sharing)**
+   **[Test on Google Colab](https://colab.research.google.com/drive/1hMYZopKnL2nI3t8w-zQtZYZz5l-0XYIs?usp=sharing)**
 
 2. **Select a T4 GPU** in the Colab runtime settings for optimal performance. This can be done by navigating to:
    - `Runtime` → `Change runtime type` → Set **Hardware accelerator** to **GPU** (preferably T4).
