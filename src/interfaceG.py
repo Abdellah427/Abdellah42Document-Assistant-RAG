@@ -49,7 +49,7 @@ def handle_send_message(mistral_key):
              pca = faiss.read_VectorTransform("pca_file")
              index = faiss.read_index("faiss_index_file")
              global csv_pathGlobal
-             st.write(csv_pathGlobal[0])
+             st.write("test:"+csv_pathGlobal[0])
              docs = rerank.search_and_rerank(pca, user_input, index, csv_pathGlobal, top_k=3)
         else:
             docs = []
@@ -171,7 +171,7 @@ def handle_file_upload():
             csv_path = os.path.join(csv_folder, uploaded_file.name)
             # Create the database based on the selected RAG method
             if st.session_state.rag_method == "Retriever":
-                create_db.create_vector_db_all_Retriever(csv_path)
+                create_db.create_vector_db_all_MiniLM_L6(csv_path)
                 st.success(f"Database created with Retriever successfully!")
             elif st.session_state.rag_method == "ColBERTv2":
                 create_db.create_vector_db_colbertv2(csv_path)
