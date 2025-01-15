@@ -180,7 +180,6 @@ def handle_file_upload():
                 global csv_pathGlobal 
                 csv_pathGlobal = csv_path
                 rerank.create_vector_db_all_MiniLM_L6_VS(csv_path)
-                csv_pathGlobal = "jjjj"
                 st.success(f"Database created with Rerank successfully!")
         else:
             st.warning("Please upload CSV files.")
