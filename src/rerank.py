@@ -108,9 +108,6 @@ def search_and_rerank(pca, query, index, texts, top_k=3):
 
 
 
-
-
-
 def detect_summary_column(df):
     """
     Détecte automatiquement la colonne contenant les résumés.
