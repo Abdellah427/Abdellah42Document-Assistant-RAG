@@ -49,7 +49,12 @@ def handle_send_message(mistral_key):
              pca = faiss.read_VectorTransform("pca_file")
              index = faiss.read_index("faiss_index_file")
              global csv_pathGlobal
-             docs = rerank.search_and_rerank(pca, user_input, index, csv_pathGlobal, top_k=3)
+             full_doc=""
+             if csv_pathGlobal != None:
+                full_doc = create_db.extract_paragraphs_from_pdf(csv_pathGlobal)
+             else:
+                full_doc = create_db.csv_to_list_str(csv_pathGlobal)
+             docs = rerank.search_and_rerank(pca, user_input, index, full_doc, top_k=3)
         else:
             docs = []
 
@@ -191,7 +196,6 @@ def handle_file_upload():
             elif file_extension == ".pdf":
                 full_doc = create_db.extract_paragraphs_from_pdf(csv_path)
 
-            st.write(f"Extracted text from the uploaded file: {full_doc[0]}")
                     
 
             # 4. Create the database based on the selected RAG method

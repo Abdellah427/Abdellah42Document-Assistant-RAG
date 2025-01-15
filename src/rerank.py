@@ -21,7 +21,6 @@ def load_mistral():
 
 
 
-
 def load_faiss(embeddings: np.ndarray) :
     """
     Load and build a FAISS index with dimensionality reduction using PCA for faster similarity searches.
@@ -34,14 +33,15 @@ def load_faiss(embeddings: np.ndarray) :
     dimension = 128  
     dimension = min(dimension, embeddings.shape[0])
     
-    pca = faiss.PCAMatrix(embeddings.shape[1], dimension)  
+    pca = faiss.PCAMatrix(embeddings.shape[1], dimension)
     pca.train(embeddings)
     reduced_embeddings = pca.apply_py(embeddings)
-    index = faiss.IndexFlatIP(dimension)  
-    index = faiss.IndexIVFFlat(index, dimension, 10)  
+    index = faiss.IndexFlatIP(dimension)
+    index = faiss.IndexIVFFlat(index, dimension, 10)
     index.train(reduced_embeddings)
     index.add(reduced_embeddings)
     return index, pca
+
 
 
 def create_vector_db_all_MiniLM_L6_VS(data_liste) -> None:
