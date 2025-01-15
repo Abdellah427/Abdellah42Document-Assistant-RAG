@@ -9,6 +9,7 @@ from langchain.schema import Document
 from typing import List
 import streamlit as st
 import numpy as np
+import os
 from src.CustomVectorRetriever import CustomVectorRetriever
 
 
@@ -105,6 +106,31 @@ def extract_paragraphs_from_pdf(pdf_path, min_characters=300, max_characters=140
 
     return grouped_paragraphs
 
+def files_to_list_str(csv_files):
+    """
+    Processes a list of file paths (either CSV or PDF) and extracts text
+    from each file, combining all the contents into a single list.
+    
+    Args:
+        csv_files (list): List of file paths (CSV or PDF).
+    
+    Returns:
+        list: Combined text from all the files in a single list.
+    """
+    full_doc = []  # This will store the combined text of all files
+
+    for file_path in csv_files:
+        file_extension = os.path.splitext(file_path)[-1].lower()
+
+        if file_extension == ".csv":
+            # Extract text from CSV file and add to full_doc
+            full_doc.extend(csv_to_list_str(file_path))
+        
+        elif file_extension == ".pdf":
+            # Extract text from PDF file and add to full_doc
+            full_doc.extend(extract_paragraphs_from_pdf(file_path))
+
+    return full_doc
 
 
 

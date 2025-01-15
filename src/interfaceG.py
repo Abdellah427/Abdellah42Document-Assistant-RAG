@@ -6,7 +6,7 @@ import src.llm_interface as llm_interface
 import src.rerank as rerank
 import faiss
 
-csv_pathGlobal: str = ""
+csv_pathGlobal = []
 
 def title():
     """
@@ -49,12 +49,11 @@ def handle_send_message(mistral_key):
              pca = faiss.read_VectorTransform("pca_file")
              index = faiss.read_index("faiss_index_file")
              global csv_pathGlobal
-             full_doc=""
              if csv_pathGlobal != None:
-                full_doc = create_db.extract_paragraphs_from_pdf(csv_pathGlobal)
+                full_doc=create_db.files_to_list_str(csv_pathGlobal)
+                docs = rerank.search_and_rerank(pca, user_input, index, full_doc, top_k=3)
              else:
-                full_doc = create_db.csv_to_list_str(csv_pathGlobal)
-             docs = rerank.search_and_rerank(pca, user_input, index, full_doc, top_k=3)
+                docs = []
         else:
             docs = []
 
@@ -176,36 +175,31 @@ def handle_file_upload():
             # 2. Save the uploaded files
 
             
-            if len(uploaded_files) == 1:  
-                uploaded_file = uploaded_files[0]  
-                file_path = os.path.join(csv_folder, uploaded_file.name)  
+            csv_paths = []  # List to store file paths
+
+            for uploaded_file in uploaded_files:
+                # Get the file path
+                file_path = os.path.join(csv_folder, uploaded_file.name)
 
                 # Save the uploaded file
                 with open(file_path, "wb") as f:
                     f.write(uploaded_file.getbuffer())
 
-                # If you want to do something with the file after it's uploaded
-                file_extension = os.path.splitext(uploaded_file.name)[-1].lower()  
-                # Add the file path to the list (if needed)
+                # Get the file extension
+                file_extension = os.path.splitext(uploaded_file.name)[-1].lower()
+
+                # Add the file path to the list
                 csv_paths.append(file_path)
-            else:
-                raise ValueError("Please upload exactly one file.") 
 
 
-            uploaded_file = uploaded_files[0]
-            csv_path = os.path.join(csv_folder, uploaded_file.name)
-            file_extension = os.path.splitext(uploaded_file.name)[-1].lower()
+            global csv_pathGlobal 
+            csv_pathGlobal = csv_paths
 
 
             # 3. Extract text from PDF or CSV file
 
 
-            full_doc=""
-            if file_extension == ".csv":
-                full_doc = create_db.csv_to_list_str(csv_path)
-    
-            elif file_extension == ".pdf":
-                full_doc = create_db.extract_paragraphs_from_pdf(csv_path)
+            full_doc=create_db.files_to_list_str(csv_paths)
 
                     
 
@@ -219,8 +213,6 @@ def handle_file_upload():
                 create_db.create_vector_db_colbertv2(full_doc)
                 st.success(f"Database created with ColBERTv2 successfully!")
             elif st.session_state.rag_method == "Rerank":
-                global csv_pathGlobal 
-                csv_pathGlobal = csv_path
                 rerank.create_vector_db_all_MiniLM_L6_VS(full_doc)
                 st.success(f"Database created with Rerank successfully!")
         else:
