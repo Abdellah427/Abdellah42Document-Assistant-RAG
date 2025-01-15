@@ -126,13 +126,25 @@ def handle_file_upload():
         for i, method in enumerate(rag_methods):
             with cols[i]:
                
+                is_selected = (method == selected_rag_method)
+                
+                # Add custom CSS to highlight the selected button
+                button_style = f"""
+                <style>
+                    .highlighted-button {{
+                        background-color: {'#4CAF50' if is_selected else 'transparent'};
+                        color: {'white' if is_selected else 'black'};
+                        border: 2px solid {'#4CAF50' if is_selected else '#ccc'};
+                    }}
+                </style>
+                """
+                st.markdown(button_style, unsafe_allow_html=True)
                 
                 if st.button(method, key=method, use_container_width=True):
                     selected_rag_method = method
                     st.session_state.rag_method = selected_rag_method
                     st.session_state['rag_method_locked'] = True  # Lock the selection
-                    # Keep the selected button highlighted
-                    st.write(f"RAG Method selected: **{st.session_state.rag_method}**")
+
 
 
     else:
@@ -141,6 +153,9 @@ def handle_file_upload():
 
     if st.button("Create Database"):
         if uploaded_files:
+
+            # 1. Initialize the session state
+
             csv_paths = []
             csv_folder = "uploaded_dataset"
 
@@ -150,7 +165,10 @@ def handle_file_upload():
             db_path = "database"
             os.makedirs(db_path, exist_ok=True)
 
-            # Save the uploaded files
+
+            # 2. Save the uploaded files
+
+
             for uploaded_file in uploaded_files:
                 file_path = os.path.join(csv_folder, uploaded_file.name)
                 with open(file_path, "wb") as f:
@@ -159,7 +177,23 @@ def handle_file_upload():
 
             uploaded_file = uploaded_files[0]
             csv_path = os.path.join(csv_folder, uploaded_file.name)
-            # Create the database based on the selected RAG method
+            file_extension = os.path.splitext(uploaded_file.name)[-1].lower()
+
+
+            # 3. Extract text from PDF or CSV file
+
+
+            full_doc=""
+            if file_extension == ".csv":
+                full_doc = create_db.csv_to_list_str(csv_path)
+    
+            elif file_extension == ".pdf":
+                full_doc = create_db.extract_text_from_pdf(csv_path)
+                    
+
+            # 4. Create the database based on the selected RAG method
+            
+
             if st.session_state.rag_method == "Retriever":
                 create_db.create_vector_db_all_MiniLM_L6(csv_path)
                 st.success(f"Database created with Retriever successfully!")

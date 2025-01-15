@@ -80,9 +80,8 @@ def rerank_results(query, results, texts, model="mistral-large-latest"):
     return [r[0] for r in ranked_results]
 
 
-def search_and_rerank(pca, query, index, csv_path, top_k=3):
+def search_and_rerank(pca, query, index, texts, top_k=3):
 
-    texts = create_db.csv_to_list_str(csv_path)
 
     # Recherche initiale
     embedding_model = SentenceTransformer("all-MiniLM-L6-v2")

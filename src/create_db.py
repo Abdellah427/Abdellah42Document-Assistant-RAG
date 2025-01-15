@@ -72,7 +72,7 @@ def extract_paragraphs_from_pdf(pdf_path):
     return paragraphs
 
 
-def create_vector_db_colbertv2(csv_path: str, max_document_length=100)-> str:
+def create_vector_db_colbertv2(documents, max_document_length=100)-> str:
     """
     Creates a vector database using the ColBERT model from a CSV file.
 
@@ -90,9 +90,7 @@ def create_vector_db_colbertv2(csv_path: str, max_document_length=100)-> str:
     RAG_Corbert = RAGPretrainedModel.from_pretrained("colbert-ir/colbertv2.0")
 
 
-    # Convert CSV data to a list of strings
-    documents = csv_to_list_str(csv_path)
-
+    
     # Index the collection using the ColBERT model
     index_path = RAG_Corbert.index(
         collection=documents,
@@ -128,7 +126,7 @@ def query_vector_db_colbertv2(query_text: str, n_results: int = 5) -> list[dict]
     return results
 
 
-def create_vector_db_all_MiniLM_L6(csv_path: str) -> None:
+def create_vector_db_all_MiniLM_L6(list) -> None:
     """
     This function performs embedding and indexing.
     
@@ -140,7 +138,6 @@ def create_vector_db_all_MiniLM_L6(csv_path: str) -> None:
     
     embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
     embeddings = []
-    list = csv_to_list_str(csv_path)
     for i, content in enumerate(list):
         embeddings.append(embedding_model.encode([content])[0])
         
