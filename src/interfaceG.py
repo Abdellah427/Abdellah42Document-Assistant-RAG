@@ -201,7 +201,7 @@ def handle_file_upload():
 
             full_doc=create_db.files_to_list_str(csv_paths)
 
-            st.write(f"Text extracted from the uploaded files: {full_doc[0]}")
+            st.write(f"Uploaded files: {full_doc[0]} \n\n {full_doc[1]} \n\n {full_doc[2]}")
 
                     
 
@@ -222,4 +222,4 @@ def handle_file_upload():
 
     elif st.session_state['rag_method_locked']:
         selected_method = st.session_state.get('rag_method', 'Not selected')  # Get the selected method or default to 'Not selected'
-        st.info(f"Database creation with the '{selected_method}' method is already in progress or completed. Please reload the page to reset.")
+        st.info(f"Database creation with the '{selected_method}' method is locked. Please reload the page to change the method.")
