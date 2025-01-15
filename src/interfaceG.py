@@ -195,15 +195,15 @@ def handle_file_upload():
 
 
             if st.session_state.rag_method == "Retriever":
-                create_db.create_vector_db_all_MiniLM_L6(csv_path)
+                create_db.create_vector_db_all_MiniLM_L6(full_doc)
                 st.success(f"Database created with Retriever successfully!")
             elif st.session_state.rag_method == "ColBERTv2":
-                create_db.create_vector_db_colbertv2(csv_path)
+                create_db.create_vector_db_colbertv2(full_doc)
                 st.success(f"Database created with ColBERTv2 successfully!")
             elif st.session_state.rag_method == "Rerank":
                 global csv_pathGlobal 
                 csv_pathGlobal = csv_path
-                rerank.create_vector_db_all_MiniLM_L6_VS(csv_path)
+                rerank.create_vector_db_all_MiniLM_L6_VS(full_doc)
                 st.success(f"Database created with Rerank successfully!")
         else:
             st.warning("Please upload CSV files.")
