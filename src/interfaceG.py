@@ -6,6 +6,7 @@ import src.llm_interface as llm_interface
 import src.rerank as rerank
 import faiss
 
+csv_pathGlobal = None
 
 def title():
     """
@@ -47,8 +48,8 @@ def handle_send_message(mistral_key):
         elif st.session_state.rag_method == "Rerank":
              pca = faiss.read_VectorTransform("pca_file")
              index = faiss.read_index("faiss_index_file")
-             df=rerank.load_data("uploaded_dataset/wiki_movie_plots_deduped_2000.csv")
-             docs = rerank.search_and_rerank(pca, user_input, index, df['Plot'].tolist(), top_k=3)
+             global csv_pathGlobal
+             docs = rerank.search_and_rerank(pca, user_input, index, csv_pathGlobal, top_k=3)
         else:
             docs = []
 
@@ -175,7 +176,9 @@ def handle_file_upload():
                 create_db.create_vector_db_colbertv2(csv_path)
                 st.success(f"Database created with ColBERTv2 successfully!")
             elif st.session_state.rag_method == "Rerank":
-                rerank.create_vector_db_all_MiniLM_L6_VS("uploaded_dataset/wiki_movie_plots_deduped_2000.csv")
+                global csv_pathGlobal 
+                csv_pathGlobal = csv_path
+                rerank.create_vector_db_all_MiniLM_L6_VS(csv_path)
                 st.success(f"Database created with Rerank successfully!")
         else:
             st.warning("Please upload CSV files.")

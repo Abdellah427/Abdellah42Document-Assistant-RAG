@@ -20,11 +20,6 @@ def load_mistral():
     return client, model
 
 
-def load_data(csv_path):
-    df = pd.read_csv(csv_path)
-    df = df.dropna(subset=["Plot"])
-    return df
-
 
 
 def load_faiss(embeddings: np.ndarray) :
@@ -54,10 +49,10 @@ def create_vector_db_all_MiniLM_L6_VS(csv_path: str) -> None:
         csv_path (str): Path to the CSV file containing the data to be indexed.
         other_options_if_needed: Any additional options required for the method.
     """
-    df = pd.read_csv(csv_path)
-    df = df.dropna(subset=["Plot"]).head(5000)
+    data_liste = create_db.csv_to_list_str(csv_path)
+    
     embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
-    embeddings = embedding_model.encode(df["Plot"].tolist(), show_progress_bar=True)
+    embeddings = embedding_model.encode(data_liste, show_progress_bar=True)
     index,pca= load_faiss(embeddings)
     faiss.write_index(index, "faiss_index_file")
     faiss.write_VectorTransform(pca, "pca_file")
