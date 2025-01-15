@@ -1,0 +1,41 @@
+Questions tests pour Résumé Harry_Potter_1_page.pdf :
+
+Who raised Harry Potter and how is their behavior described in the summary ?
+What is the significance of the Philosopher's Stone in the story, and what does Voldemort intend to do with it?
+How does Harry prevent Voldemort from retrieving the Philosopher's Stone, and what happens to Professor Quirrell as a result?
+
+Questions tests pour Résumé Harry_Potter_123.pdf : 
+
+Who raised Harry Potter and how is their behavior described in the summary ?
+What is the significance of the Philosopher's Stone in the story, and what does Voldemort intend to do with it?
+How does Harry prevent Voldemort from retrieving the Philosopher's Stone, and what happens to Professor Quirrell as a result?
+
+What is the significance of Tom Riddle's diary, and how does it impact the events at Hogwarts?
+How does Harry discover the entrance to the Chamber of Secrets, and what obstacles does he face inside?
+What role does Dobby play in warning Harry about the danger at Hogwarts, and how is he freed in the end?
+
+What event leads to Harry learning that Sirius Black is after him and what does he overhear at the Three Broomsticks pub in Hogsmeade?
+How does Harry first encounter a Dementor, and what effect does it have on him?
+Describe the significance of the Time-Turner in the resolution of the plot. What do Harry and Hermione use it for?
+
+Questions tests pour Movie_Collection_130_000.csv :
+
+Can you recommend a movie that features a strong female lead character?
+Which film in the dataset is known for its adventure and action-packed sequences?
+Is there a movie that deals with themes of time travel or alternate realities?
+Could you suggest a film that focuses on a coming-of-age story?
+What's a good movie from the dataset that includes an ensemble cast with complex interpersonal dynamics?
+
+Questions tests pour Movie_Collecction_5000.csv :
+
+Can you find a movie that features a redemption arc for its main character?
+What are some movies where the main character is a detective solving a mystery?
+Which movies in the dataset are based on true stories?
+Are there any films that explore themes of artificial intelligence?
+Can you list movies that are centered around a heist or grand theft?
+
+Questions tests pour Movie_Collection_Titanic_LionKing_SpiderMan.csv:
+
+Do any of the movies feature a superhero or fantastical character?
+Which movie in the dataset involves a struggle for power or throne?
+What film listed explores adventures at sea?
