@@ -68,7 +68,7 @@ def extract_paragraphs_from_pdf(pdf_path, min_characters=300, max_characters=140
     Returns:
         list[str]: List of paragraphs (or grouped paragraphs) extracted from the PDF.
     """
-    import pdfplumber
+    
 
     paragraphs = []
 

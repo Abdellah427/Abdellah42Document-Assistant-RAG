@@ -201,7 +201,6 @@ def handle_file_upload():
 
             full_doc=create_db.files_to_list_str(csv_paths)
 
-            st.write(f"Uploaded files: {full_doc[0]} \n\n {full_doc[1]} \n\n {full_doc[2]}")
 
                     
 
