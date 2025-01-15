@@ -3,6 +3,7 @@ from ragatouille import RAGPretrainedModel
 
 import faiss
 import logging
+import pdfplumber
 from sentence_transformers import SentenceTransformer
 from langchain.schema import Document
 from typing import List
@@ -43,6 +44,32 @@ def csv_to_list_str(csv_path: str) -> list[str]:
         text_output.append(" ".join(row_text))
 
     return text_output
+
+
+def extract_paragraphs_from_pdf(pdf_path):
+    """
+    Extracts text from a PDF file and returns a list of strings,
+    where each element corresponds to a paragraph.
+
+    Args:
+        pdf_path (str): Path to the PDF file.
+
+    Returns:
+        list[str]: List of paragraphs extracted from the PDF.
+    """
+    paragraphs = []
+
+    with pdfplumber.open(pdf_path) as pdf:
+        for page in pdf.pages:
+            text = page.extract_text()
+            if text:  
+                page_paragraphs = text.split('\n\n') 
+                paragraphs.extend(page_paragraphs)
+    
+    # Clean up: Remove empty lines or whitespace-only strings
+    paragraphs = [p.strip() for p in paragraphs if p.strip()]
+    
+    return paragraphs
 
 
 def create_vector_db_colbertv2(csv_path: str, max_document_length=100)-> str:

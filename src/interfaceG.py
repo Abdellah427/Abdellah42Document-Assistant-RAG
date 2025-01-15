@@ -97,7 +97,11 @@ def display_documents():
 def handle_file_upload():
     """Handle the uploading of CSV files and the creation of the database."""
 
-    uploaded_files = st.file_uploader("Upload CSV files", accept_multiple_files=True, type=["csv"])
+    uploaded_files = st.file_uploader(
+        "Upload CSV or PDF files", 
+        accept_multiple_files=True, 
+        type=["csv", "pdf"]
+    )
 
     if 'rag_method_locked' not in st.session_state:
         st.session_state['rag_method_locked'] = False
@@ -121,20 +125,7 @@ def handle_file_upload():
         # Loop through rag methods and create buttons
         for i, method in enumerate(rag_methods):
             with cols[i]:
-                # Check if the button is selected, then highlight it
-                is_selected = (method == selected_rag_method)
-                
-                # Add custom CSS to highlight the selected button
-                button_style = f"""
-                <style>
-                    .highlighted-button {{
-                        background-color: {'#4CAF50' if is_selected else 'transparent'};
-                        color: {'white' if is_selected else 'black'};
-                        border: 2px solid {'#4CAF50' if is_selected else '#ccc'};
-                    }}
-                </style>
-                """
-                st.markdown(button_style, unsafe_allow_html=True)
+               
                 
                 if st.button(method, key=method, use_container_width=True):
                     selected_rag_method = method
