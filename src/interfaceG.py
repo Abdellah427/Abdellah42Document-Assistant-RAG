@@ -6,7 +6,7 @@ import src.llm_interface as llm_interface
 import src.rerank as rerank
 import faiss
 
-csv_pathGlobal = None
+csv_pathGlobal = ""
 
 def title():
     """
