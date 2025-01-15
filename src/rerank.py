@@ -33,7 +33,7 @@ def get_embeddings(df,embedding_model):
     return embeddings
 
 
-def load_faiss(embeddings: np.ndarray) -> List[faiss.IndexIVFFlat, faiss.PCAMatrix]:
+def load_faiss(embeddings: np.ndarray) :
     """
     Load and build a FAISS index with dimensionality reduction using PCA for faster similarity searches.
     Args:
