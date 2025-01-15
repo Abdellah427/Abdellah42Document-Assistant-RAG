@@ -49,7 +49,7 @@ def handle_send_message(mistral_key):
              pca = faiss.read_VectorTransform("pca_file")
              index = faiss.read_index("faiss_index_file")
              global csv_pathGlobal
-             st.write("test:"+csv_pathGlobal[0])
+             st.write(csv_pathGlobal)
              docs = rerank.search_and_rerank(pca, user_input, index, csv_pathGlobal, top_k=3)
         else:
             docs = []
