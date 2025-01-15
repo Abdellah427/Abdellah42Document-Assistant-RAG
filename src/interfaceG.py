@@ -144,6 +144,7 @@ def handle_file_upload():
                     selected_rag_method = method
                     st.session_state.rag_method = selected_rag_method
                     st.session_state['rag_method_locked'] = True  # Lock the selection
+                
 
 
 
@@ -209,4 +210,5 @@ def handle_file_upload():
             st.warning("Please upload CSV files.")
 
     elif st.session_state['rag_method_locked']:
-        st.info("Database creation already in progress or completed. Reload the app to reset.")
+        selected_method = st.session_state.get('rag_method', 'Not selected')  # Get the selected method or default to 'Not selected'
+        st.info(f"Database creation with the '{selected_method}' method is already in progress or completed. Please reload the page to reset.")

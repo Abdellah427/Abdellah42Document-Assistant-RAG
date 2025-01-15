@@ -41,7 +41,7 @@ def load_faiss(embeddings: np.ndarray) :
     index.add(reduced_embeddings)
     return index, pca
 
-def create_vector_db_all_MiniLM_L6_VS(data_liste: str) -> None:
+def create_vector_db_all_MiniLM_L6_VS(data_liste) -> None:
     """
     This function performs embedding and indexing.
     
