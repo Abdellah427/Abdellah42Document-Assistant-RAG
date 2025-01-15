@@ -53,18 +53,21 @@ def csv_to_list_str(csv_path: str) -> list[str]:
     return text_output
 
 
-def extract_paragraphs_from_pdf(pdf_path):
+def extract_paragraphs_from_pdf(pdf_path, min_characters=500):
     """
     Extracts text from a PDF file and returns a list of strings,
-    where each element corresponds to a paragraph.
-    Ensures all extracted text is UTF-8 encoded.
+    where each element corresponds to a paragraph or a group of paragraphs
+    to ensure a minimum number of characters.
 
     Args:
         pdf_path (str): Path to the PDF file.
+        min_characters (int): Minimum number of characters for each paragraph/group.
 
     Returns:
-        list[str]: List of paragraphs extracted from the PDF.
+        list[str]: List of paragraphs (or grouped paragraphs) extracted from the PDF.
     """
+    import pdfplumber
+
     paragraphs = []
 
     with pdfplumber.open(pdf_path) as pdf:
@@ -79,7 +82,23 @@ def extract_paragraphs_from_pdf(pdf_path):
     # Clean up: Remove empty lines or whitespace-only strings
     paragraphs = [p.strip() for p in paragraphs if p.strip()]
 
-    return paragraphs
+    # Group paragraphs to ensure a minimum number of characters
+    grouped_paragraphs = []
+    current_group = ""
+
+    for paragraph in paragraphs:
+        if len(current_group) < min_characters:
+            current_group += " " + paragraph
+        else:
+            grouped_paragraphs.append(current_group.strip())
+            current_group = paragraph
+
+    # Add the last group if not empty
+    if current_group.strip():
+        grouped_paragraphs.append(current_group.strip())
+
+    return grouped_paragraphs
+
 
 
 def create_vector_db_colbertv2(documents, max_document_length=100)-> str:

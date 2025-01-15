@@ -143,7 +143,7 @@ def handle_file_upload():
                 if st.button(method, key=method, use_container_width=True):
                     selected_rag_method = method
                     st.session_state.rag_method = selected_rag_method
-                    st.session_state['rag_method_locked'] = True  # Lock the selection
+                    
                     
                 
 
