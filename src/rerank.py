@@ -107,14 +107,9 @@ def search_and_rerank(pca, query, index, texts, top_k=3):
     return results
 
 
-    # Reranking
-    #ranked_indices = rerank_results( query, indices[0], texts)
-    #return [texts[idx] for idx in ranked_indices]
 
 
 
-
-import pandas as pd
 
 def detect_summary_column(df):
     """
