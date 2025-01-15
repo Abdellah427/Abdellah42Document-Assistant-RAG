@@ -222,3 +222,4 @@ def handle_file_upload():
     elif st.session_state['rag_method_locked']:
         selected_method = st.session_state.get('rag_method', 'Not selected')  # Get the selected method or default to 'Not selected'
         st.info(f"Database creation with the '{selected_method}' method is locked. Please reload the page to change the method.")
+#

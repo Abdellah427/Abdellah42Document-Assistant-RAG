@@ -135,3 +135,4 @@ def detect_summary_column(df):
     avg_lengths = df.apply(lambda col: col.astype(str).str.len().mean())
     return avg_lengths.idxmax()
 
+#

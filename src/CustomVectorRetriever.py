@@ -46,3 +46,4 @@ class CustomVectorRetriever(BaseRetriever):
             List[Document]: List of relevant Document objects.
         """
         return self._get_relevant_documents(query)
+#

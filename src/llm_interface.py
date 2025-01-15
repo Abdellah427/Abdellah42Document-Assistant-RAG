@@ -40,3 +40,4 @@ def query_mistral(user_input: str, history: list[str], api_key: str) -> str:
         # Handle errors with a detailed message
         print(f"Detailed error: {e}")
         return "Sorry, an error occurred while processing your request."
+#

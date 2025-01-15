@@ -25,3 +25,4 @@ def format_response(response: str) -> str:
     # Format the response (in this case, just return the response as is)
     formatted_response = f"{response}"
     return formatted_response
+#
