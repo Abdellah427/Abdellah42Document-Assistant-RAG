@@ -176,15 +176,21 @@ def handle_file_upload():
             # 2. Save the uploaded files
 
 
-            for uploaded_file in uploaded_files:
-                file_path = os.path.join(csv_folder, uploaded_file.name)
+            if len(uploaded_files) == 1:  
+                uploaded_file = uploaded_files[0]  
+                file_path = os.path.join(csv_folder, uploaded_file.name)  
+
+                # Save the uploaded file
                 with open(file_path, "wb") as f:
                     f.write(uploaded_file.getbuffer())
-                csv_paths.append(file_path)
 
-            uploaded_file = uploaded_files[0]
-            csv_path = os.path.join(csv_folder, uploaded_file.name)
-            file_extension = os.path.splitext(uploaded_file.name)[-1].lower()
+                # If you want to do something with the file after it's uploaded
+                file_extension = os.path.splitext(uploaded_file.name)[-1].lower()  
+                # Add the file path to the list (if needed)
+                csv_paths.append(file_path)
+            else:
+                raise ValueError("Please upload exactly one file.") 
+
 
 
             # 3. Extract text from PDF or CSV file
