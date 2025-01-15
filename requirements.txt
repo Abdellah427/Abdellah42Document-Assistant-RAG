@@ -1,0 +1,11 @@
+langchain
+chromadb
+pydantic
+numpy
+pandas
+streamlit
+sentence-transformers
+mistralai
+ragatouille
+faiss-gpu-cu12
+pdfplumber
