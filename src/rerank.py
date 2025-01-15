@@ -73,7 +73,7 @@ def create_vector_db_all_MiniLM_L6_VS(csv_path: str) -> None:
 
 
 def rerank_results(query, results, texts, model="mistral-large-latest"):
-    client, model = load_mistral()
+    client, _ = load_mistral()
     prompts = [
         f"Query: {query}\nDocument: {texts[idx]}\nRelevance (1-10):"
         for idx in results
