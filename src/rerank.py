@@ -70,85 +70,55 @@ def create_vector_db_all_MiniLM_L6_VS(csv_path: str) -> None:
     faiss.write_VectorTransform(pca, "pca_file")
     return index, pca
 
+
+
 def rerank_results(query, results, texts, model="mistral-large-latest"):
-    """
-    Reranks the retrieved documents using a large language model (LLM).
-    
-    Args:
-        query (str): The user's query.
-        results (list[int]): List of indices of the initially retrieved documents.
-        texts (list[str]): List of document contents.
-        model (str): The LLM model to use for reranking (default is "mistral-large-latest").
-    
-    Returns:
-        list[str]: The documents reordered by relevance based on the LLM's scores.
-    """
-    # Load the LLM client
     client, _ = load_mistral()
-    
-    # Create prompts for the LLM
     prompts = [
         f"Query: {query}\nDocument: {texts[idx]}\nRelevance (1-10):"
         for idx in results
     ]
-    
-    # Get responses from the LLM
     responses = client.chat.complete(
         model=model,
         messages=[{"role": "user", "content": prompt} for prompt in prompts]
     )
-    
-    # Extract scores and rerank documents
+
     ranked_results = []
     for idx, response in zip(results, responses.choices):
         score = int(re.findall(r'\d+', response.message.content.strip())[0])
         ranked_results.append((idx, score))
-    
-    # Sort documents by their scores in descending order
+
     ranked_results.sort(key=lambda x: x[1], reverse=True)
-    
-    # Return the documents in the reranked order
-    return [texts[r[0]] for r in ranked_results]
+    return [r[0] for r in ranked_results]
 
 
 def search_and_rerank(pca, query, index, texts, top_k=3):
-    """
-    Effectue une recherche initiale, applique une réduction de dimension avec PCA,
-    et rerank les résultats avec un LLM.
 
-    Args:
-        pca: Un objet PCA pour réduire les dimensions des embeddings.
-        query (str): La requête de l'utilisateur.
-        index: L'index de recherche (par ex., FAISS).
-        texts (list[str]): Liste des documents associés à l'index.
-        top_k (int): Nombre de résultats à retourner (par défaut 3).
-
-    Returns:
-        list[str]: Les 3 documents les plus proches après reranking, avec leur distance initiale.
-    """
-    # Étape 1 : Recherche initiale
+    # Recherche initiale
     embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
     query_embedding = embedding_model.encode([query])
     query_reduced = pca.apply_py(query_embedding)
     distances, indices = index.search(query_reduced, top_k)
+    embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
 
-    # Étape 2 : Reranking des résultats avec un LLM
-    ranked_indices = rerank_results(query, indices[0], texts)
+    query_embedding = embedding_model.encode([query])
+    query_reduced = pca.apply_py(query_embedding)
+    distances, indices = index.search(query_reduced, top_k)
 
-    # Étape 3 : Associer les distances aux résultats rerankés
-    ranked_results = []
-    for idx in ranked_indices[:top_k]:  # Limite aux top_k résultats rerankés
-        if isinstance(idx, int) and idx >= 0:  # Vérifie si idx est bien un entier valide
-            original_index = indices[0].tolist().index(idx)  # Trouve l'indice d'origine
-            ranked_results.append(
-                f"Document: {texts[idx]}, Distance: {distances[0][original_index]:.4f}"
-            )
-        else:
-            ranked_results.append(
-                f"Document: {texts[idx]}, Distance: N/A (Not found in initial search)"
-            )
+    # Directly return the content + distance for each document
+    results = []
+    for i, idx in enumerate(indices[0]):
+        doc_content = texts[idx]  # Get the content of the document
+        doc_distance = distances[0][i]  # Get the corresponding distance
+        results.append(f"Content: {doc_content}, Distance: {doc_distance}")
 
-    return ranked_results
+    return results
+
+
+    # Reranking
+    ranked_indices = rerank_results( query, indices[0], texts)
+    return [texts[idx] for idx in ranked_indices]
+
 
 
 
