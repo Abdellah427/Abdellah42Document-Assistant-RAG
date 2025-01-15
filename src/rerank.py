@@ -73,23 +73,45 @@ def create_vector_db_all_MiniLM_L6_VS(csv_path: str) -> None:
 
 
 def rerank_results(query, results, texts, model="mistral-large-latest"):
+    """
+    Reranks the retrieved documents using a large language model (LLM).
+    
+    Args:
+        query (str): The user's query.
+        results (list[int]): List of indices of the initially retrieved documents.
+        texts (list[str]): List of document contents.
+        model (str): The LLM model to use for reranking (default is "mistral-large-latest").
+    
+    Returns:
+        list[str]: The documents reordered by relevance based on the LLM's scores.
+    """
+    # Load the LLM client
     client, _ = load_mistral()
+    
+    # Create prompts for the LLM
     prompts = [
         f"Query: {query}\nDocument: {texts[idx]}\nRelevance (1-10):"
         for idx in results
     ]
+    
+    # Get responses from the LLM
     responses = client.chat.complete(
         model=model,
         messages=[{"role": "user", "content": prompt} for prompt in prompts]
     )
-
+    
+    # Extract scores and rerank documents
     ranked_results = []
     for idx, response in zip(results, responses.choices):
         score = int(re.findall(r'\d+', response.message.content.strip())[0])
         ranked_results.append((idx, score))
-
+    
+    # Sort documents by their scores in descending order
     ranked_results.sort(key=lambda x: x[1], reverse=True)
-    return [r[0] for r in ranked_results]
+    
+    # Return the documents in the reranked order
+    return [texts[r[0]] for r in ranked_results]
+
 
 
 def search_and_rerank(pca, query, index, texts, top_k=3):
@@ -104,11 +126,14 @@ def search_and_rerank(pca, query, index, texts, top_k=3):
     # Reranking
     ranked_indices = rerank_results(query, indices[0], texts)
 
-    results = [
-        f"Document: {texts[idx]}, Distance: {distances[0][i]:.4f}"
-        for i, idx in enumerate(ranked_indices)
-    ]
-    return results
+    ranked_results = []
+    for idx in ranked_indices:
+        original_index = list(indices[0]).index(idx)  # Trouver l'indice original
+        ranked_results.append(
+            f"Document: {texts[idx]}, Distance: {distances[0][original_index]:.4f}"
+        )
+
+    return ranked_results
 
 
 
