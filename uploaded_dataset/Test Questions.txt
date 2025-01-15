@@ -36,6 +36,6 @@ Can you list movies that are centered around a heist or grand theft?
 
 Questions tests pour Movie_Collection_Titanic_LionKing_SpiderMan.csv:
 
-Do any of the movies feature a superhero or fantastical character?
-Which movie in the dataset involves a struggle for power or throne?
-What film listed explores adventures at sea?
+Which movie is about a fight between lions for a throne?
+Which movie features a superhero who gains spider-like abilities?
+Which movie is about a tragic sinking of a ship?
