@@ -116,8 +116,8 @@ def search_and_rerank(pca, query, index, texts, top_k=3):
 
 
     # Reranking
-    ranked_indices = rerank_results( query, indices[0], texts)
-    return [texts[idx] for idx in ranked_indices]
+    #ranked_indices = rerank_results( query, indices[0], texts)
+    #return [texts[idx] for idx in ranked_indices]
 
 
 
