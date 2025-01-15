@@ -31,7 +31,9 @@ def load_faiss(embeddings: np.ndarray) :
         Tuple[faiss.IndexIVFFlat, faiss.PCAMatrix]: A tuple containing the trained FAISS index
         and the PCA matrix used for dimensionality reduction.
     """
-    dimension = embeddings.shape[1]  
+    dimension = 128  
+    dimension = min(dimension, embeddings.shape[0])
+    
     pca = faiss.PCAMatrix(embeddings.shape[1], dimension)  
     pca.train(embeddings)
     reduced_embeddings = pca.apply_py(embeddings)
@@ -40,6 +42,7 @@ def load_faiss(embeddings: np.ndarray) :
     index.train(reduced_embeddings)
     index.add(reduced_embeddings)
     return index, pca
+
 
 def create_vector_db_all_MiniLM_L6_VS(data_liste) -> None:
     """

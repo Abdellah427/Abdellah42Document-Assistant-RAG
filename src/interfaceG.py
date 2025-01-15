@@ -144,7 +144,7 @@ def handle_file_upload():
                     selected_rag_method = method
                     st.session_state.rag_method = selected_rag_method
                     st.session_state['rag_method_locked'] = True  # Lock the selection
-                    st.write(f"RAG Method selected: **{st.session_state.rag_method}** (locked)")
+                    
                 
 
 
