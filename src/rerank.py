@@ -41,7 +41,7 @@ def load_faiss(embeddings: np.ndarray) :
     index.add(reduced_embeddings)
     return index, pca
 
-def create_vector_db_all_MiniLM_L6_VS(csv_path: str) -> None:
+def create_vector_db_all_MiniLM_L6_VS(data_liste: str) -> None:
     """
     This function performs embedding and indexing.
     
@@ -49,7 +49,6 @@ def create_vector_db_all_MiniLM_L6_VS(csv_path: str) -> None:
         csv_path (str): Path to the CSV file containing the data to be indexed.
         other_options_if_needed: Any additional options required for the method.
     """
-    data_liste = create_db.csv_to_list_str(csv_path)
     
     embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
     embeddings = embedding_model.encode(data_liste, show_progress_bar=True)
