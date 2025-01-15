@@ -38,7 +38,7 @@ def load_faiss(embeddings: np.ndarray) :
     pca.train(embeddings)
     reduced_embeddings = pca.apply_py(embeddings)
     index = faiss.IndexFlatIP(dimension)  
-    index = faiss.IndexIVFFlat(index, dimension, 100)  
+    index = faiss.IndexIVFFlat(index, dimension, 10)  
     index.train(reduced_embeddings)
     index.add(reduced_embeddings)
     return index, pca

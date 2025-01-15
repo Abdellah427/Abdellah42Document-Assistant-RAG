@@ -53,7 +53,7 @@ def csv_to_list_str(csv_path: str) -> list[str]:
     return text_output
 
 
-def extract_paragraphs_from_pdf(pdf_path, min_characters=500, max_characters=1400):
+def extract_paragraphs_from_pdf(pdf_path, min_characters=300, max_characters=1400):
     """
     Extracts text from a PDF file and returns a list of strings,
     where each element corresponds to a paragraph or a group of paragraphs
