@@ -53,15 +53,16 @@ def csv_to_list_str(csv_path: str) -> list[str]:
     return text_output
 
 
-def extract_paragraphs_from_pdf(pdf_path, min_characters=500):
+def extract_paragraphs_from_pdf(pdf_path, min_characters=500, max_characters=1400):
     """
     Extracts text from a PDF file and returns a list of strings,
     where each element corresponds to a paragraph or a group of paragraphs
-    to ensure a minimum number of characters.
+    to ensure a minimum and maximum number of characters.
 
     Args:
         pdf_path (str): Path to the PDF file.
         min_characters (int): Minimum number of characters for each paragraph/group.
+        max_characters (int): Maximum number of characters for each paragraph/group.
 
     Returns:
         list[str]: List of paragraphs (or grouped paragraphs) extracted from the PDF.
@@ -82,22 +83,28 @@ def extract_paragraphs_from_pdf(pdf_path, min_characters=500):
     # Clean up: Remove empty lines or whitespace-only strings
     paragraphs = [p.strip() for p in paragraphs if p.strip()]
 
-    # Group paragraphs to ensure a minimum number of characters
+    # Group paragraphs to ensure a minimum and maximum number of characters
     grouped_paragraphs = []
     current_group = ""
 
     for paragraph in paragraphs:
-        if len(current_group) < min_characters:
+        if len(current_group) + len(paragraph) + 1 <= max_characters:
             current_group += " " + paragraph
         else:
-            grouped_paragraphs.append(current_group.strip())
-            current_group = paragraph
+            # If the current group is too small, merge it with the next paragraph
+            if len(current_group) < min_characters:
+                current_group += " " + paragraph
+            else:
+                # Add the current group to the result
+                grouped_paragraphs.append(current_group.strip())
+                current_group = paragraph
 
     # Add the last group if not empty
     if current_group.strip():
         grouped_paragraphs.append(current_group.strip())
 
     return grouped_paragraphs
+
 
 
 
