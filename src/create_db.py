@@ -12,19 +12,10 @@ import numpy as np
 import os
 from src.CustomVectorRetriever import CustomVectorRetriever
 
-
-
-
-# Global variable to store the RAG model instance
 RAG_Corbert = None
 
 
-def load_model_colbert() -> None:
-    """
-    Loads the ColBERT model into the global variable `RAG_Corbert`.
-    """
-    global RAG_Corbert
-    RAG_Corbert = RAGPretrainedModel.from_pretrained("colbert-ir/colbertv2.0")
+# Global variable to store the RAG model instance
 
 
 def csv_to_list_str(csv_path: str) -> list[str]:
@@ -146,8 +137,8 @@ def create_vector_db_colbertv2(documents, max_document_length=100)-> str:
     Returns:
         str: Path to the created index.
     """
+    
     global RAG_Corbert
-
     # Load the model if not already loaded
     RAG_Corbert = RAGPretrainedModel.from_pretrained("colbert-ir/colbertv2.0")
 
@@ -177,7 +168,7 @@ def query_vector_db_colbertv2(query_text: str, n_results: int = 5) -> list[dict]
         list[dict]: A list of results, each containing the retrieved text and its score.
     """
     global RAG_Corbert
-
+    RAG_Corbert = RAGPretrainedModel.from_pretrained("colbert-ir/colbertv2.0")
     # Load the model if not already loaded
     if RAG_Corbert is None:
         load_model_colbert()
