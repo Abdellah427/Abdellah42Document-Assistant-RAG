@@ -78,6 +78,6 @@ If you want to quickly test the project without installing it locally, use the G
 This project was developed as part of the academic year **2024–2025** at **CY Tech**.
 
 - **Abdellah Hassani**
-- **Romain Ren**
-- **Simon Agnésa**
-- **Ritchy Guenneau**
+- **Romain Guenneau**
+- **Simon Ren**
+- **Ritchy Agnesa**
