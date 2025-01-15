@@ -190,6 +190,8 @@ def handle_file_upload():
     
             elif file_extension == ".pdf":
                 full_doc = create_db.extract_paragraphs_from_pdf(csv_path)
+
+            st.write(f"Extracted text from the uploaded file: {full_doc[0]}")
                     
 
             # 4. Create the database based on the selected RAG method
