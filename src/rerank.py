@@ -102,8 +102,13 @@ def search_and_rerank(pca, query, index, texts, top_k=3):
     
 
     # Reranking
-    ranked_indices = rerank_results( query, indices[0], texts)
-    return [texts[idx] for idx in ranked_indices]
+    ranked_indices = rerank_results(query, indices[0], texts)
+
+    results = [
+        f"Document: {texts[idx]}, Distance: {distances[0][i]:.4f}"
+        for i, idx in enumerate(ranked_indices)
+    ]
+    return results
 
 
 
