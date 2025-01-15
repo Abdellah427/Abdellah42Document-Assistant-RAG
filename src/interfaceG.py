@@ -201,6 +201,8 @@ def handle_file_upload():
 
             full_doc=create_db.files_to_list_str(csv_paths)
 
+            st.write(f"Text extracted from the uploaded files: {full_doc[0]}")
+
                     
 
             # 4. Create the database based on the selected RAG method
