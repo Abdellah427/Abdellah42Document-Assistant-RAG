@@ -31,8 +31,8 @@ def load_faiss(embeddings: np.ndarray) :
         Tuple[faiss.IndexIVFFlat, faiss.PCAMatrix]: A tuple containing the trained FAISS index
         and the PCA matrix used for dimensionality reduction.
     """
-    dimension = 128  
-    pca = faiss.PCAMatrix(embeddings.shape[1], dimension)
+    dimension = embeddings.shape[1]  
+    pca = faiss.PCAMatrix(embeddings.shape[1], dimension)  
     pca.train(embeddings)
     reduced_embeddings = pca.apply_py(embeddings)
     index = faiss.IndexFlatIP(dimension)  
