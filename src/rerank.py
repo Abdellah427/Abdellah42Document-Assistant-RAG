@@ -3,6 +3,7 @@ from sentence_transformers import SentenceTransformer
 import faiss
 import numpy as np
 from mistralai import Mistral
+import re
 
 def load_mistral():
     """
@@ -71,19 +72,38 @@ def create_vector_db_all_MiniLM_L6_VS(csv_path: str) -> None:
 
 
 
+def rerank_results(query, results, texts, model="mistral-large-latest"):
+    client, model = load_mistral()
+    prompts = [
+        f"Query: {query}\nDocument: {texts[idx]}\nRelevance (1-10):"
+        for idx in results
+    ]
+    responses = client.chat.complete(
+        model=model,
+        messages=[{"role": "user", "content": prompt} for prompt in prompts]
+    )
+
+    ranked_results = []
+    for idx, response in zip(results, responses.choices):
+        score = int(re.findall(r'\d+', response.message.content.strip())[0])
+        ranked_results.append((idx, score))
+
+    ranked_results.sort(key=lambda x: x[1], reverse=True)
+    return [r[0] for r in ranked_results]
+
+
 def search_and_rerank(pca, query, index, texts, top_k=3):
+
     # Recherche initiale
     embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
     query_embedding = embedding_model.encode([query])
     query_reduced = pca.apply_py(query_embedding)
     distances, indices = index.search(query_reduced, top_k)
     
-    results = [
-        f"Document: {texts[idx]}, Distance: {dist:.4f}"
-        for dist, idx in zip(distances[0], indices[0])
-    ]
-    return results
 
+    # Reranking
+    ranked_indices = rerank_results( query, indices[0], texts)
+    return [texts[idx] for idx in ranked_indices]
 
 
 

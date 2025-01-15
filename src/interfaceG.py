@@ -48,7 +48,7 @@ def handle_send_message(mistral_key):
              pca = faiss.read_VectorTransform("pca_file")
              index = faiss.read_index("faiss_index_file")
              df=rerank.load_data("uploaded_dataset/wiki_movie_plots_deduped_2000.csv")
-             docs = rerank.search_and_rerank(pca, processed_input, index, df['Plot'].tolist())
+             docs = rerank.search_and_rerank(pca, user_input, index, df['Plot'].tolist(), top_k=3)
         else:
             docs = []
 
