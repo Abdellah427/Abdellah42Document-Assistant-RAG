@@ -112,42 +112,44 @@ def rerank_results(query, results, texts, model="mistral-large-latest"):
     # Return the documents in the reranked order
     return [texts[r[0]] for r in ranked_results]
 
-
-
 def search_and_rerank(pca, query, index, texts, top_k=3):
     """
-    Effectue une recherche initiale, applique une réduction de dimension avec PCA,
-    et rerank les résultats avec un LLM.
+    Recherche initiale et rerank des documents les plus pertinents.
 
     Args:
-        pca: Un objet PCA pour réduire les dimensions des embeddings.
-        query (str): La requête de l'utilisateur.
-        index: L'index de recherche (par ex., FAISS).
-        texts (list[str]): Liste des documents associés à l'index.
-        top_k (int): Nombre de résultats à retourner (par défaut 3).
+        pca: Objet PCA pour la réduction de dimension.
+        query (str): Requête utilisateur.
+        index: Index de recherche (e.g., FAISS).
+        texts (list[str]): Liste des documents.
+        top_k (int): Nombre de résultats à retourner.
 
     Returns:
-        list[str]: Les 3 documents les plus proches après reranking, avec leur distance initiale.
+        list[str]: Les documents rerankés avec leurs distances.
     """
-    # Étape 1 : Recherche initiale
+    # Recherche initiale
     embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
     query_embedding = embedding_model.encode([query])
     query_reduced = pca.apply_py(query_embedding)
     distances, indices = index.search(query_reduced, top_k)
 
-    # Étape 2 : Reranking des résultats avec un LLM
+    # Reranking
     ranked_indices = rerank_results(query, indices[0], texts)
 
-    # Étape 3 : Associer les distances aux résultats rerankés
+    # Construction des résultats rerankés
     ranked_results = []
     for idx in ranked_indices[:top_k]:  # Limite aux top_k résultats rerankés
-        original_index = list(indices[0]).index(idx)  # Trouve l'indice d'origine
-        ranked_results.append(
-            f"Document: {texts[idx]}, Distance: {distances[0][original_index]:.4f}"
-        )
+        if idx in indices[0]:  # Vérifie si l'indice existe dans la recherche initiale
+            original_index = indices[0].tolist().index(idx)  # Trouve l'indice original
+            ranked_results.append(
+                f"Document: {texts[idx]}, Distance: {distances[0][original_index]:.4f}"
+            )
+        else:
+            # Gérer les cas où idx n'est pas dans indices[0]
+            ranked_results.append(
+                f"Document: {texts[idx]}, Distance: N/A (Not found in initial search)"
+            )
 
     return ranked_results
-
 
 
 
