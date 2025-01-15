@@ -36,7 +36,14 @@ def csv_to_list_str(csv_path: str) -> list[str]:
     Returns:
         list[str]: A list of strings representing the rows in the CSV.
     """
-    df = pd.read_csv(csv_path)
+
+    try:
+        # Attempt to read the file with utf-8 encoding
+        df = pd.read_csv(csv_path, encoding="utf-8")
+    except UnicodeDecodeError:
+        # Fallback to ISO-8859-1 if utf-8 fails
+        df = pd.read_csv(csv_path, encoding="ISO-8859-1")
+
     text_output = []
 
     for _, row in df.iterrows():
@@ -50,6 +57,7 @@ def extract_paragraphs_from_pdf(pdf_path):
     """
     Extracts text from a PDF file and returns a list of strings,
     where each element corresponds to a paragraph.
+    Ensures all extracted text is UTF-8 encoded.
 
     Args:
         pdf_path (str): Path to the PDF file.
@@ -62,13 +70,15 @@ def extract_paragraphs_from_pdf(pdf_path):
     with pdfplumber.open(pdf_path) as pdf:
         for page in pdf.pages:
             text = page.extract_text()
-            if text:  
-                page_paragraphs = text.split('\n\n') 
+            if text:
+                # Ensure the text contains only UTF-8 characters
+                utf8_text = text.encode("utf-8", errors="ignore").decode("utf-8", errors="ignore")
+                page_paragraphs = utf8_text.split('\n\n')
                 paragraphs.extend(page_paragraphs)
-    
+
     # Clean up: Remove empty lines or whitespace-only strings
     paragraphs = [p.strip() for p in paragraphs if p.strip()]
-    
+
     return paragraphs
 
 
