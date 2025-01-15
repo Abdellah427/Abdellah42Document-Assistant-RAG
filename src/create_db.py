@@ -109,24 +109,22 @@ def create_vector_db_all_MiniLM_L6(csv_path: str) -> None:
         csv_path (str): Path to the CSV file containing the data to be indexed.
         other_options_if_needed: Any additional options required for the method.
     """
-    logging.info("Starting the creation of embeddings...")
-    df = pd.read_csv(csv_path)
-    df = df[['Release Year', 'Title', 'Genre', 'Plot']]
-    df = df.dropna(subset=['Plot'])
+    
+    
     embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
     embeddings = []
-    for i, plot in enumerate(df['Plot'].tolist()):
-        embeddings.append(embedding_model.encode([plot])[0])
+    list = csv_to_list_str(csv_path)
+    for i, content in enumerate(list):
+        embeddings.append(embedding_model.encode([content])[0])
         
-        if i % 100 == 0 or i == len(df['Plot']) - 1:
-            logging.info(f"Processed {i + 1}/{len(df['Plot'])} plots")
+        if i % 100 == 0 or i == len(list) - 1:
+            logging.info(f"Processed {i + 1}/{len(list)} content")
     embeddings = np.array(embeddings)
     dimension = embeddings.shape[1]
     index = faiss.IndexFlatL2(dimension)
     index.add(embeddings)
     documents = [
-        Document(page_content=plot, metadata={'Title': title, 'Release Year': year, 'Genre': genre})
-        for plot, title, year, genre in zip(df['Plot'], df['Title'], df['Release Year'], df['Genre'])
+        Document(page_content=content, metadata={'content': content}) for content in list
     ]
     retriever = CustomVectorRetriever(embedding_function=embedding_model.encode, index=index, documents=documents)
     
@@ -148,7 +146,7 @@ def query_vector_db_CustomVectorRetriever(query_text: str, n_results: int = 5) -
         raise ValueError("Retriever not found in session state. Please create embeddings first.")
     retriever = st.session_state.retriever
     relevant_documents = retriever._get_relevant_documents(query_text, k=n_results)
-    results = [{'Title': doc.metadata['Title'], 'Release Year': doc.metadata['Release Year'], 'Genre': doc.metadata['Genre'], 'Plot': doc.page_content} for doc in relevant_documents]
+    results = [{'Content': doc.page_content} for doc in relevant_documents]
     return results
 
 
